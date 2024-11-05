@@ -4,6 +4,7 @@ import {
   Box,
   Button,
   Center,
+  NumberInput,
   Tabs,
   TextInput,
   Title,
@@ -25,10 +26,16 @@ export default function CustomForm() {
 
       <Tabs variant="unstyled" defaultValue="expense" classNames={classes}>
         <Tabs.List grow>
-          <Tabs.Tab value="expense" className="rounded-s-md text-[15px] font-medium">
+          <Tabs.Tab
+            value="expense"
+            className="rounded-s-md text-[15px] font-medium"
+          >
             Expense
           </Tabs.Tab>
-          <Tabs.Tab value="income" className="rounded-e-md text-[15px] font-medium">
+          <Tabs.Tab
+            value="income"
+            className="rounded-e-md text-[15px] font-medium"
+          >
             Income
           </Tabs.Tab>
         </Tabs.List>
@@ -40,15 +47,28 @@ export default function CustomForm() {
             <Autocomplete
               label="Category"
               placeholder="Select a category"
-              data={["Education", "Food", "Health", "Salary"]}
+              data={[
+                "Education",
+                "Food",
+                "Health",
+                "Bill",
+                "Insurance",
+                "Tax",
+                "Transport",
+                "Telephone",
+              ]}
               rightSection={
                 <IoIosArrowDown style={{ width: rem(16), height: rem(16) }} />
               }
             />
-            <TextInput label="Amount" placeholder="12345" />
-            <DateInput label="Date" placeholder="dd/mm/yyyy"   rightSection={
+            <NumberInput label="Amount" placeholder="12345" />
+            <DateInput
+              label="Date"
+              placeholder="dd/mm/yyyy"
+              rightSection={
                 <IconCalendar style={{ width: rem(16), height: rem(16) }} />
-              }  />
+              }
+            />
             <Button w="100%">Save</Button>
           </Box>
         </Tabs.Panel>
@@ -59,7 +79,7 @@ export default function CustomForm() {
             <Autocomplete
               label="Category"
               placeholder="Select a category"
-              data={["Education", "Food", "Health", "Salary"]}
+              data={["Salary", "Outsourcing", "Bond", "Dividend"]}
               rightSection={
                 <IoIosArrowDown style={{ width: rem(16), height: rem(16) }} />
               }

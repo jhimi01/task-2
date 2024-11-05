@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import {
   ActionIcon,
   Box,
@@ -17,40 +17,53 @@ import {
   IconWalletOff,
 } from "@tabler/icons-react";
 import React from "react";
-import '@mantine/dates/styles.css';
+import "@mantine/dates/styles.css";
 
 export default function Output() {
-
   const isSmallDevice = useMediaQuery("(max-width: 768px)");
 
   return (
     <Box>
       <Flex
-      className="border py-5 mb-5 rounded-md bg-slate-50 flex items-center mt-5 md:mt-0 justify-around text-slate-800"
-      gap={isSmallDevice ? 'md' : 'xl'} // Adjust spacing based on screen size
-    >
-      <div className="text-center">
-        <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>BDT 20000</Title>
-        <Text size={isSmallDevice ? "10px" : "sm"} className="text-slate-700 font-medium">
-          Balance
-        </Text>
-      </div>
-      <Divider orientation="vertical" />
-      <div className="text-center">
-        <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>BDT 20000</Title>
-        <Text size={isSmallDevice ? "10px" : "sm"} className="text-slate-700 font-medium">
-          Total Income
-        </Text>
-      </div>
-      <Divider orientation="vertical" />
-      <div className="text-center">
-        <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>BDT 20000</Title>
-        <Text size={isSmallDevice ? "10px" : "sm"} className="text-slate-700 font-medium">
-          Total Expense
-        </Text>
-      </div>
-    </Flex>
-
+        className="border py-5 mb-5 rounded-md bg-slate-50 flex items-center mt-5 md:mt-0 justify-around text-slate-800"
+        gap={isSmallDevice ? "md" : "xl"} // Adjust spacing based on screen size
+      >
+        <div className="text-center">
+          <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>
+            BDT 20000
+          </Title>
+          <Text
+            size={isSmallDevice ? "10px" : "sm"}
+            className="text-slate-700 font-medium"
+          >
+            Balance
+          </Text>
+        </div>
+        <Divider orientation="vertical" />
+        <div className="text-center">
+          <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>
+            BDT 20000
+          </Title>
+          <Text
+            size={isSmallDevice ? "10px" : "sm"}
+            className="text-slate-700 font-medium"
+          >
+            Total Income
+          </Text>
+        </div>
+        <Divider orientation="vertical" />
+        <div className="text-center">
+          <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>
+            BDT 20000
+          </Title>
+          <Text
+            size={isSmallDevice ? "10px" : "sm"}
+            className="text-slate-700 font-medium"
+          >
+            Total Expense
+          </Text>
+        </div>
+      </Flex>
 
       <div className="justify-between md:flex gap-5 rounded-md">
         {/* income out */}
@@ -88,14 +101,21 @@ export default function Output() {
           </Box>
           <Divider orientation="horizontal" />
           <Box className="p-5 text-slate-800">
-            <Flex className=" justify-between items-center">
-              <Box>
+            <Flex className="hover:bg-slate-50 justify-between items-center group">
+              <Box className="">
                 <Text size="lg" fw={600}>
                   Salary
                 </Text>
                 <Text size="sm">11, January, 2024</Text>
               </Box>
+              <div>
               <Title order={5}>BDT 10000</Title>
+              <IconAdjustments
+                  
+                  style={{ width: "20px", height: "20px" }}
+                  stroke={1.5}
+                />
+              </div>
             </Flex>
             <Divider orientation="horizontal" my={5} />
             <Flex className=" justify-between items-center">
