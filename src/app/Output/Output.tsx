@@ -18,7 +18,7 @@ import React from "react";
 export default function Output() {
   return (
     <Box>
-      <Flex className="border py-5 mb-5 rounded-md bg-slate-50 flex items-center justify-around text-slate-800">
+      <Flex className="border py-5 mb-5 flex-wrap rounded-md bg-slate-50 flex items-center justify-around text-slate-800">
         <div className="text-center">
           <Title order={3}>BDT 20000</Title>
           <Text size="sm" className="text-slate-700 font-medium">
@@ -41,9 +41,9 @@ export default function Output() {
         </div>
       </Flex>
 
-      <Flex className="justify-between gap-5 rounded-md">
+      <div className="justify-between md:flex gap-5 rounded-md">
         {/* income out */}
-        <Box className="rounded-md border flex-1">
+        <Box className="rounded-md border flex-1 md:mb-0 mb-5">
           <Box className="bg-slate-50 rounded-md flex-between p-5">
             <Flex gap={10}>
               <ActionIcon variant="filled" aria-label="Settings">
@@ -165,7 +165,7 @@ export default function Output() {
             </Flex>
           </Box>
         </Box>
-      </Flex>
+      </div>
     </Box>
   );
 }
