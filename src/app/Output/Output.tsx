@@ -17,6 +17,7 @@ import {
   IconWalletOff,
 } from "@tabler/icons-react";
 import React from "react";
+import '@mantine/dates/styles.css';
 
 export default function Output() {
 
