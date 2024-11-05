@@ -1,12 +1,15 @@
+'use client'
 import {
   ActionIcon,
   Box,
   Center,
   Divider,
   Flex,
+  rem,
   Text,
   Title,
 } from "@mantine/core";
+import { useMediaQuery } from "@mantine/hooks";
 import {
   IconAdjustments,
   IconLineHeight,
@@ -16,30 +19,37 @@ import {
 import React from "react";
 
 export default function Output() {
+
+  const isSmallDevice = useMediaQuery("(max-width: 768px)");
+
   return (
     <Box>
-      <Flex className="border py-5 mb-5 flex-wrap rounded-md bg-slate-50 flex items-center justify-around text-slate-800">
-        <div className="text-center">
-          <Title order={3}>BDT 20000</Title>
-          <Text size="sm" className="text-slate-700 font-medium">
-            Balance
-          </Text>
-        </div>
-        <Divider orientation="vertical" />
-        <div className="text-center">
-          <Title order={3}>BDT 20000</Title>
-          <Text size="sm" className="text-slate-700 font-medium">
-            Total Income
-          </Text>
-        </div>
-        <Divider orientation="vertical" />
-        <div className="text-center">
-          <Title order={3}>BDT 20000</Title>
-          <Text size="sm" className="text-slate-700 font-medium">
-            Total Expense
-          </Text>
-        </div>
-      </Flex>
+      <Flex
+      className="border py-5 mb-5 rounded-md bg-slate-50 flex items-center mt-5 md:mt-0 justify-around text-slate-800"
+      gap={isSmallDevice ? 'md' : 'xl'} // Adjust spacing based on screen size
+    >
+      <div className="text-center">
+        <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>BDT 20000</Title>
+        <Text size={isSmallDevice ? "10px" : "sm"} className="text-slate-700 font-medium">
+          Balance
+        </Text>
+      </div>
+      <Divider orientation="vertical" />
+      <div className="text-center">
+        <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>BDT 20000</Title>
+        <Text size={isSmallDevice ? "10px" : "sm"} className="text-slate-700 font-medium">
+          Total Income
+        </Text>
+      </div>
+      <Divider orientation="vertical" />
+      <div className="text-center">
+        <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>BDT 20000</Title>
+        <Text size={isSmallDevice ? "10px" : "sm"} className="text-slate-700 font-medium">
+          Total Expense
+        </Text>
+      </div>
+    </Flex>
+
 
       <div className="justify-between md:flex gap-5 rounded-md">
         {/* income out */}
