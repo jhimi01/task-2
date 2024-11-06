@@ -15,3 +15,12 @@
     @apply flex justify-between items-center;
   }
 }
+
+
+.m_d4fb9cad, .m_d4fb9cad::before, .m_d4fb9cad::after{
+  background-color: #fff !important;
+}
+
+.m_d4fb9cad[data-opened]{
+  background-color: #12947f !important;
+}

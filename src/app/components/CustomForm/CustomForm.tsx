@@ -5,6 +5,7 @@ import {
   Button,
   Center,
   NumberInput,
+  Select,
   Tabs,
   TextInput,
   Title,
@@ -14,8 +15,11 @@ import { DateInput } from "@mantine/dates";
 import { IoIosArrowDown } from "react-icons/io";
 import classes from "./CustomForm.module.css";
 import { IconCalendar } from "@tabler/icons-react";
+import { useForm } from "@mantine/form";
 
 export default function CustomForm() {
+  const form = useForm({});
+
   return (
     <Box className="border rounded bg-slate-50 py-5 px-5">
       <Center>
@@ -43,8 +47,12 @@ export default function CustomForm() {
         {/* Matching Tab Panels */}
         <Tabs.Panel value="expense" pt="xs">
           {/* Expense form */}
-          <Box className="space-y-4 mt-5">
-            <Autocomplete
+          <Box
+            component="form"
+            onSubmit={form.onSubmit((values) => console.log(values))}
+            className="space-y-4 mt-5"
+          >
+            <Select
               label="Category"
               placeholder="Select a category"
               data={[
@@ -60,16 +68,24 @@ export default function CustomForm() {
               rightSection={
                 <IoIosArrowDown style={{ width: rem(16), height: rem(16) }} />
               }
+              {...form.getInputProps('category')}
             />
-            <NumberInput label="Amount" placeholder="12345" />
+            <NumberInput
+              label="Amount"
+              placeholder="12345"
+              {...form.getInputProps("amount")}
+            />
             <DateInput
               label="Date"
               placeholder="dd/mm/yyyy"
               rightSection={
                 <IconCalendar style={{ width: rem(16), height: rem(16) }} />
               }
+              {...form.getInputProps("date")}
             />
-            <Button w="100%">Save</Button>
+            <Button w="100%" type="submit">
+              Save
+            </Button>
           </Box>
         </Tabs.Panel>
 
