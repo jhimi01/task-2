@@ -2,9 +2,12 @@
 import {
   ActionIcon,
   Box,
+  Button,
   Center,
+  Checkbox,
   Divider,
   Flex,
+  Menu,
   rem,
   Text,
   Title,
@@ -15,6 +18,13 @@ import {
   IconLineHeight,
   IconWallet,
   IconWalletOff,
+  IconPencil,
+  IconTrash,
+  IconSettings,
+  IconMessageCircle,
+  IconPhoto,
+  IconSearch,
+  IconArrowsLeftRight,
 } from "@tabler/icons-react";
 import React from "react";
 import "@mantine/dates/styles.css";
@@ -79,53 +89,95 @@ export default function Output() {
               <Text fw={600}>Income</Text>
             </Flex>
             <Flex gap={10}>
-              <ActionIcon
-                className="bg-white text-black outline outline-[1px] outline-slate-600"
-                aria-label="Settings"
-              >
-                <IconLineHeight
-                  style={{ width: "70%", height: "70%" }}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-              <ActionIcon
-                className="bg-white text-black outline outline-[1px] outline-slate-600"
-                aria-label="Settings"
-              >
-                <IconAdjustments
-                  style={{ width: "70%", height: "70%" }}
-                  stroke={1.5}
-                />
-              </ActionIcon>
+              {/* ------ low to high/ high to low -------- */}
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
+                  <ActionIcon
+                    className="bg-white hover:bg-slate-200 hover:text-black text-black outline outline-[1px] outline-slate-600"
+                    aria-label="Settings"
+                  >
+                    <IconLineHeight
+                      style={{ width: "70%", height: "70%" }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Menu.Target>
+
+                <Menu.Dropdown>
+                  <Menu.Item>Low to High</Menu.Item>
+                  <Menu.Item>High to Low</Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+
+              {/* ------ filter data -------- */}
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
+                  <ActionIcon
+                    className="bg-white hover:bg-slate-200 hover:text-black text-black outline outline-[1px] outline-slate-600"
+                    aria-label="Settings"
+                  >
+                    <IconAdjustments
+                      style={{ width: "70%", height: "70%" }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Menu.Target>
+
+                <Menu.Dropdown className="space-y-3 pb-5">
+                  <Checkbox label="salary" />
+                  <Checkbox label="outsourcing" />
+                  <Checkbox label="Bond" />
+                  <Checkbox label="Devidend" />
+                </Menu.Dropdown>
+              </Menu>
             </Flex>
           </Box>
           <Divider orientation="horizontal" />
           <Box className="p-5 text-slate-800">
-            <Flex className="hover:bg-slate-50 justify-between items-center group">
+            <Flex className="justify-between items-center group">
               <Box className="">
                 <Text size="lg" fw={600}>
                   Salary
                 </Text>
                 <Text size="sm">11, January, 2024</Text>
               </Box>
-              <div>
-              <Title order={5}>BDT 10000</Title>
-              <IconAdjustments
-                  
-                  style={{ width: "20px", height: "20px" }}
+              <div className="flex gap-2">
+                <Title order={5}>BDT 10000</Title>
+
+                <IconPencil
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
+                  stroke={1.5}
+                />
+                <IconTrash
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
                   stroke={1.5}
                 />
               </div>
             </Flex>
             <Divider orientation="horizontal" my={5} />
-            <Flex className=" justify-between items-center">
+            <Flex className="group justify-between items-center">
               <Box>
                 <Text size="lg" fw={600}>
                   Salary
                 </Text>
                 <Text size="sm">11, January, 2024</Text>
               </Box>
-              <Title order={5}>BDT 10000</Title>
+              <div className="flex gap-2">
+                <Title order={5}>BDT 10000</Title>
+
+                <IconPencil
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
+                  stroke={1.5}
+                />
+                <IconTrash
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
+                  stroke={1.5}
+                />
+              </div>
             </Flex>
           </Box>
         </Box>
@@ -143,56 +195,121 @@ export default function Output() {
               <Text fw={600}>Expense</Text>
             </Flex>
             <Flex gap={10}>
-              <ActionIcon
-                className="bg-white text-black outline outline-[1px] outline-slate-600"
-                aria-label="Settings"
-              >
-                <IconLineHeight
-                  style={{ width: "70%", height: "70%" }}
-                  stroke={1.5}
-                />
-              </ActionIcon>
-              <ActionIcon
-                className="bg-white text-black outline outline-[1px] outline-slate-600"
-                aria-label="Settings"
-              >
-                <IconAdjustments
-                  style={{ width: "70%", height: "70%" }}
-                  stroke={1.5}
-                />
-              </ActionIcon>
+              {/* ------ low to high/ high to low -------- */}
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
+                  <ActionIcon
+                    className="bg-white hover:bg-slate-200 hover:text-black text-black outline outline-[1px] outline-slate-600"
+                    aria-label="Settings"
+                  >
+                    <IconLineHeight
+                      style={{ width: "70%", height: "70%" }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Menu.Target>
+
+                <Menu.Dropdown>
+                  <Menu.Item>Low to High</Menu.Item>
+                  <Menu.Item>High to Low</Menu.Item>
+                </Menu.Dropdown>
+              </Menu>
+
+              {/* ------ filter data -------- */}
+              <Menu shadow="md" width={200}>
+                <Menu.Target>
+                  <ActionIcon
+                    className="bg-white hover:bg-slate-200 hover:text-black text-black outline outline-[1px] outline-slate-600"
+                    aria-label="Settings"
+                  >
+                    <IconAdjustments
+                      style={{ width: "70%", height: "70%" }}
+                      stroke={1.5}
+                    />
+                  </ActionIcon>
+                </Menu.Target>
+
+                <Menu.Dropdown className="space-y-3 pb-5">
+                  <Checkbox label="Education" />
+                  <Checkbox label="Food" />
+                  <Checkbox label="Health" />
+                  <Checkbox label="Bill" />
+                  <Checkbox label="Tax" />
+                  <Checkbox label="Transport" />
+                  <Checkbox label="Telephone" />
+                </Menu.Dropdown>
+              </Menu>
             </Flex>
           </Box>
           <Divider orientation="horizontal" />
           <Box className="p-5 text-slate-800">
-            <Flex className=" justify-between items-center">
+            <Flex className=" justify-between group items-center">
               <Box>
                 <Text size="lg" fw={600}>
                   Education
                 </Text>
                 <Text size="sm">11, January, 2024</Text>
               </Box>
-              <Title order={5}>BDT 10000</Title>
+              <div className="flex gap-2">
+                <Title order={5}>BDT 10000</Title>
+
+                <IconPencil
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
+                  stroke={1.5}
+                />
+                <IconTrash
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
+                  stroke={1.5}
+                />
+              </div>
             </Flex>
             <Divider orientation="horizontal" my={5} />
-            <Flex className=" justify-between items-center">
+            <Flex className=" justify-between group items-center">
               <Box>
                 <Text size="lg" fw={600}>
                   Food
                 </Text>
                 <Text size="sm">11, January, 2024</Text>
               </Box>
-              <Title order={5}>BDT 10000</Title>
+              <div className="flex gap-2">
+                <Title order={5}>BDT 10000</Title>
+
+                <IconPencil
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
+                  stroke={1.5}
+                />
+                <IconTrash
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
+                  stroke={1.5}
+                />
+              </div>
             </Flex>
             <Divider orientation="horizontal" my={5} />
-            <Flex className=" justify-between items-center">
+            <Flex className=" justify-between group items-center">
               <Box>
                 <Text size="lg" fw={600}>
                   Health
                 </Text>
                 <Text size="sm">11, January, 2024</Text>
               </Box>
-              <Title order={5}>BDT 10000</Title>
+              <div className="flex gap-2">
+                <Title order={5}>BDT 10000</Title>
+
+                <IconPencil
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
+                  stroke={1.5}
+                />
+                <IconTrash
+                  className="group-hover:block hidden cursor-pointer"
+                  style={{ width: "25px", height: "25px" }}
+                  stroke={1.5}
+                />
+              </div>
             </Flex>
           </Box>
         </Box>
