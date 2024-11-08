@@ -1,13 +1,11 @@
 "use client";
 import {
-  Autocomplete,
   Box,
   Button,
   Center,
   NumberInput,
   Select,
   Tabs,
-  TextInput,
   Title,
   rem,
 } from "@mantine/core";
@@ -16,13 +14,13 @@ import { IoIosArrowDown } from "react-icons/io";
 import classes from "./CustomForm.module.css";
 import { IconCalendar } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
-import { useContext } from "react";
-import AccountContext, { useAccount } from "@/contexts/AccountContext";
+import  { useAccount } from "@/contexts/AccountContext";
 
 export default function CustomForm() {
   const { setIncome, setExpenses } = useAccount();
 
-  const form = useForm({
+
+  const formExpense = useForm({
     initialValues: {
       category: "",
       amount: 0,
@@ -30,6 +28,29 @@ export default function CustomForm() {
     },
   });
 
+  const formIncome = useForm({
+    initialValues: {
+      incomecategory: "",
+      incomeamount: 0,
+      incomedate: "",
+    },
+  });
+  // income submition ---------
+  const handleSubmitIncome = (values: {
+    incomecategory: string;
+    incomeamount: number;
+    incomedate: string;
+  }) => {
+    const savedDate = JSON.parse(localStorage.getItem("income") || "[]");
+    const newArray = { ...values, id: Date.now() };
+    const updatedData = [...savedDate, newArray];
+
+    localStorage.setItem("income", JSON.stringify(updatedData));
+
+    setIncome(updatedData);
+  };
+
+  // expenses submition ---------
   const handleSubmit = (values: {
     category: string;
     amount: number;
@@ -41,7 +62,7 @@ export default function CustomForm() {
 
     localStorage.setItem("expenses", JSON.stringify(updatedData));
 
-    // Update context state to reflect the new data
+
     setExpenses(updatedData);
   };
 
@@ -69,12 +90,12 @@ export default function CustomForm() {
           </Tabs.Tab>
         </Tabs.List>
 
-        {/* Matching Tab Panels */}
+        
         <Tabs.Panel value="expense" pt="xs">
           {/* Expense form */}
           <Box
             component="form"
-            onSubmit={form.onSubmit(handleSubmit)}
+            onSubmit={formExpense.onSubmit(handleSubmit)}
             className="space-y-4 mt-5"
           >
             <Select
@@ -93,12 +114,12 @@ export default function CustomForm() {
               rightSection={
                 <IoIosArrowDown style={{ width: rem(16), height: rem(16) }} />
               }
-              {...form.getInputProps("category")}
+              {...formExpense.getInputProps("category")}
             />
             <NumberInput
               label="Amount"
               placeholder="12345"
-              {...form.getInputProps("amount")}
+              {...formExpense.getInputProps("amount")}
             />
             <DateInput
               label="Date"
@@ -106,7 +127,7 @@ export default function CustomForm() {
               rightSection={
                 <IconCalendar style={{ width: rem(16), height: rem(16) }} />
               }
-              {...form.getInputProps("date")}
+              {...formExpense.getInputProps("date")}
             />
             <Button w="100%" type="submit">
               Save
@@ -116,18 +137,33 @@ export default function CustomForm() {
 
         <Tabs.Panel value="income" pt="xs">
           {/* income form */}
-          <Box className="space-y-4 mt-5">
-            <Autocomplete
+          <Box
+            component="form"
+            onSubmit={formIncome.onSubmit(handleSubmitIncome)}
+            className="space-y-4 mt-5"
+          >
+            <Select
               label="Category"
               placeholder="Select a category"
               data={["Salary", "Outsourcing", "Bond", "Dividend"]}
+              {...formIncome.getInputProps("incomecategory")}
               rightSection={
                 <IoIosArrowDown style={{ width: rem(16), height: rem(16) }} />
               }
             />
-            <TextInput label="Amount" placeholder="12345" />
-            <DateInput label="Date" placeholder="dd/mm/yyyy" />
-            <Button w="100%">Save</Button>
+            <NumberInput
+              label="Amount"
+              placeholder="12345"
+              {...formIncome.getInputProps("incomeamount")}
+            />
+            <DateInput
+              label="Date"
+              placeholder="dd/mm/yyyy"
+              {...formIncome.getInputProps("incomedate")}
+            />
+            <Button type="submit" w="100%">
+              Save
+            </Button>
           </Box>
         </Tabs.Panel>
       </Tabs>

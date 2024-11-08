@@ -8,28 +8,39 @@ import React, {
   useContext,
 } from "react";
 
-// Define the shape of the context value
-interface AccountContextType {
-  income: number[];
-  setIncome: React.Dispatch<React.SetStateAction<number[]>>;
-  expenses: number[];
-  setExpenses: React.Dispatch<React.SetStateAction<number[]>>;
+// Define interfaces for income and expense items
+interface IncomeItem {
+  id: number;
+  incomecategory: string;
+  incomeamount: number;
+  incomedate: string;
 }
 
-// Create the context with an initial value of `undefined`
-// so we can ensure it’s always used within a provider
+interface ExpenseItem {
+  id: number;
+  category: string;
+  amount: number;
+  date: string;
+}
+
+interface AccountContextType {
+  income: IncomeItem[];
+  setIncome: React.Dispatch<React.SetStateAction<IncomeItem[]>>;
+  expenses: ExpenseItem[];
+  setExpenses: React.Dispatch<React.SetStateAction<ExpenseItem[]>>;
+}
+
 const AccountContext = createContext<AccountContextType | undefined>(undefined);
 
 interface AccountProviderProps {
   children: ReactNode;
 }
 
-// Define the provider component with an explicit return type of JSX.Element
 export const AccountProvider = ({
   children,
 }: AccountProviderProps): JSX.Element => {
-  const [income, setIncome] = useState<number[]>([]);
-  const [expenses, setExpenses] = useState<number[]>([]);
+  const [income, setIncome] = useState<IncomeItem[]>([]);
+  const [expenses, setExpenses] = useState<ExpenseItem[]>([]);
 
   useEffect(() => {
     const savedIncome = JSON.parse(localStorage.getItem("income") || "[]");
@@ -38,12 +49,10 @@ export const AccountProvider = ({
     setExpenses(savedExpenses);
   }, []);
 
-  // Save income to localStorage when it updates
   useEffect(() => {
     localStorage.setItem("income", JSON.stringify(income));
   }, [income]);
 
-  // Save expenses to localStorage when it updates
   useEffect(() => {
     localStorage.setItem("expenses", JSON.stringify(expenses));
   }, [expenses]);
@@ -57,7 +66,6 @@ export const AccountProvider = ({
   );
 };
 
-// Custom hook to use the AccountContext safely
 export const useAccount = () => {
   const context = useContext(AccountContext);
   if (!context) {

@@ -26,7 +26,7 @@ export const metadata: Metadata = {
 };
 
 const theme = createTheme({
-  primaryColor: "customGreen", // Set primary color to the custom color name
+  primaryColor: "customGreen", 
   colors: {
     customGreen: [
       "#12947F",

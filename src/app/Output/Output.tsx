@@ -2,7 +2,6 @@
 import {
   ActionIcon,
   Box,
-  Button,
   Center,
   Checkbox,
   Divider,
@@ -20,22 +19,17 @@ import {
   IconWalletOff,
   IconPencil,
   IconTrash,
-  IconSettings,
-  IconMessageCircle,
-  IconPhoto,
-  IconSearch,
-  IconArrowsLeftRight,
 } from "@tabler/icons-react";
-import React, { useContext } from "react";
 import "@mantine/dates/styles.css";
-import AccountContext, { useAccount } from "@/contexts/AccountContext";
+import { useAccount } from "@/contexts/AccountContext";
 
 export default function Output() {
-  const { income, expenses, setExpenses } = useAccount();
+  const { income, expenses, setExpenses, setIncome } = useAccount();
 
-  console.log(expenses);
+  console.log("income", income);
+  console.log("expenses", expenses);
 
-  const totalIncome = income.reduce((acc, curr) => acc + curr.amount, 0);
+  const totalIncome = income.reduce((acc, curr) => acc + curr.incomeamount, 0);
   const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
   const balance = totalIncome - totalExpense;
 
@@ -49,19 +43,22 @@ export default function Output() {
     });
   };
 
-  const handleTrash = (id: number) => {
+  // delete items from expenses
+  const handleTrashexpenses = (id: number) => {
     const result = expenses.filter((exp) => exp.id !== id);
     localStorage.setItem("expenses", JSON.stringify(result));
     setExpenses(result);
   };
+  // delete items from income
+  const handleTrashIncome = (id: number) => {
+    const result = income.filter((inc) => inc.id !== id);
+    localStorage.setItem("income", JSON.stringify(result));
+    setIncome(result);
+  };
 
   return (
     <Box>
-      <Flex
-        className="border mb-5 rounded-md bg-slate-50 mt-5 md:mt-0 text-slate-800"
-
-        // Adjust spacing based on screen size
-      >
+      <Flex className="border mb-5 rounded-md bg-slate-50 mt-5 md:mt-0 text-slate-800">
         <div
           className={`text-center flex-1 py-5 ${
             balance < 0 && "bg-[#ff0000] text-white"
@@ -172,19 +169,21 @@ export default function Output() {
                   <Flex className="justify-between group items-center">
                     <Box>
                       <Text size="lg" fw={600}>
-                        {incomeitem?.category}
+                        {incomeitem?.incomecategory}
                       </Text>
-                      <Text size="sm">{formatDate(incomeitem?.date)}</Text>
+                      <Text size="sm">
+                        {formatDate(incomeitem?.incomedate)}
+                      </Text>
                     </Box>
                     <div className="flex gap-2">
-                      <Title order={5}>BDT {incomeitem?.amount}</Title>
+                      <Title order={5}>BDT {incomeitem?.incomeamount}</Title>
                       <IconPencil
                         className="group-hover:block hidden cursor-pointer"
                         style={{ width: "25px", height: "25px" }}
                         stroke={1.5}
                       />
                       <IconTrash
-                        onClick={handleTrash}
+                        onClick={() => handleTrashIncome(incomeitem?.id)}
                         className="group-hover:block hidden cursor-pointer"
                         style={{ width: "25px", height: "25px" }}
                         stroke={1.5}
@@ -279,7 +278,7 @@ export default function Output() {
                         stroke={1.5}
                       />
                       <IconTrash
-                        onClick={() => handleTrash(expense?.id)}
+                        onClick={() => handleTrashexpenses(expense?.id)}
                         className="group-hover:block hidden cursor-pointer"
                         style={{ width: "25px", height: "25px" }}
                         stroke={1.5}
