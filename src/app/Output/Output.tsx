@@ -31,35 +31,48 @@ import "@mantine/dates/styles.css";
 import AccountContext, { useAccount } from "@/contexts/AccountContext";
 
 export default function Output() {
-
   const { income, expenses } = useAccount();
 
-const totalIncome = income.reduce((acc, curr) => acc + curr.amount, 0);
-const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
-const balance = totalIncome - totalExpense;
+  console.log(expenses);
 
+  const totalIncome = income.reduce((acc, curr) => acc + curr.amount, 0);
+  const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
+  const balance = totalIncome - totalExpense;
 
   const isSmallDevice = useMediaQuery("(max-width: 768px)");
 
+  const formatDate = (date: string) => {
+    return new Date(date).toLocaleDateString("en-Us", {
+      day: "numeric",
+      month: "long",
+      year: "numeric",
+    });
+  };
+
   return (
     <Box>
-     <Flex
-        className="border py-5 mb-5 rounded-md bg-slate-50 flex items-center mt-5 md:mt-0 justify-around text-slate-800"
-        gap={isSmallDevice ? "md" : "xl"} // Adjust spacing based on screen size
+      <Flex
+        className="border mb-5 rounded-md bg-slate-50 mt-5 md:mt-0 text-slate-800"
+
+        // Adjust spacing based on screen size
       >
-        <div className={`text-center ${balance < 0 && "bg-red-500"}`}>
+        <div
+          className={`text-center flex-1 py-5 ${
+            balance < 0 && "bg-[#ff0000] text-white"
+          }`}
+        >
           <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>
             BDT {balance}
           </Title>
           <Text
             size={isSmallDevice ? "10px" : "sm"}
-            className="text-slate-700 font-medium"
+            className={`${balance < 0 && "text-white"}`}
           >
             Balance
           </Text>
         </div>
         <Divider orientation="vertical" />
-        <div className="text-center">
+        <div className="text-center flex-1 py-5">
           <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>
             BDT {totalIncome}
           </Title>
@@ -71,7 +84,7 @@ const balance = totalIncome - totalExpense;
           </Text>
         </div>
         <Divider orientation="vertical" />
-        <div className="text-center">
+        <div className="text-center flex-1 py-5">
           <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>
             BDT {totalExpense}
           </Title>
@@ -82,7 +95,7 @@ const balance = totalIncome - totalExpense;
             Total Expense
           </Text>
         </div>
-    </Flex>
+      </Flex>
 
       <div className="justify-between md:flex gap-5 rounded-md">
         {/* income out */}
@@ -143,51 +156,38 @@ const balance = totalIncome - totalExpense;
           </Box>
           <Divider orientation="horizontal" />
           <Box className="p-5 text-slate-800">
-            <Flex className="justify-between items-center group">
-              <Box className="">
-                <Text size="lg" fw={600}>
-                  Salary
-                </Text>
-                <Text size="sm">11, January, 2024</Text>
-              </Box>
-              <div className="flex gap-2">
-                <Title order={5}>BDT 10000</Title>
-
-                <IconPencil
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-                <IconTrash
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-              </div>
-            </Flex>
-            <Divider orientation="horizontal" my={5} />
-            <Flex className="group justify-between items-center">
-              <Box>
-                <Text size="lg" fw={600}>
-                  Salary
-                </Text>
-                <Text size="sm">11, January, 2024</Text>
-              </Box>
-              <div className="flex gap-2">
-                <Title order={5}>BDT 10000</Title>
-
-                <IconPencil
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-                <IconTrash
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-              </div>
-            </Flex>
+            {income?.length === 0 ? (
+              <Center>
+                <Title order={4}>No Income</Title>
+              </Center>
+            ) : (
+              income?.map((incomeitem, index) => (
+                <Box key={index}>
+                  <Flex className="justify-between group items-center">
+                    <Box>
+                      <Text size="lg" fw={600}>
+                        {incomeitem?.category}
+                      </Text>
+                      <Text size="sm">{formatDate(incomeitem?.date)}</Text>
+                    </Box>
+                    <div className="flex gap-2">
+                      <Title order={5}>BDT {incomeitem?.amount}</Title>
+                      <IconPencil
+                        className="group-hover:block hidden cursor-pointer"
+                        style={{ width: "25px", height: "25px" }}
+                        stroke={1.5}
+                      />
+                      <IconTrash
+                        className="group-hover:block hidden cursor-pointer"
+                        style={{ width: "25px", height: "25px" }}
+                        stroke={1.5}
+                      />
+                    </div>
+                  </Flex>
+                  <Divider orientation="horizontal" my={5} />
+                </Box>
+              ))
+            )}
           </Box>
         </Box>
 
@@ -252,74 +252,36 @@ const balance = totalIncome - totalExpense;
           </Box>
           <Divider orientation="horizontal" />
           <Box className="p-5 text-slate-800">
-            <Flex className=" justify-between group items-center">
-              <Box>
-                <Text size="lg" fw={600}>
-                  Education
-                </Text>
-                <Text size="sm">11, January, 2024</Text>
-              </Box>
-              <div className="flex gap-2">
-                <Title order={5}>BDT 10000</Title>
-
-                <IconPencil
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-                <IconTrash
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-              </div>
-            </Flex>
-            <Divider orientation="horizontal" my={5} />
-            <Flex className=" justify-between group items-center">
-              <Box>
-                <Text size="lg" fw={600}>
-                  Food
-                </Text>
-                <Text size="sm">11, January, 2024</Text>
-              </Box>
-              <div className="flex gap-2">
-                <Title order={5}>BDT 10000</Title>
-
-                <IconPencil
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-                <IconTrash
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-              </div>
-            </Flex>
-            <Divider orientation="horizontal" my={5} />
-            <Flex className=" justify-between group items-center">
-              <Box>
-                <Text size="lg" fw={600}>
-                  Health
-                </Text>
-                <Text size="sm">11, January, 2024</Text>
-              </Box>
-              <div className="flex gap-2">
-                <Title order={5}>BDT 10000</Title>
-
-                <IconPencil
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-                <IconTrash
-                  className="group-hover:block hidden cursor-pointer"
-                  style={{ width: "25px", height: "25px" }}
-                  stroke={1.5}
-                />
-              </div>
-            </Flex>
+            {expenses?.length === 0 ? (
+              <Text>No expenses</Text>
+            ) : (
+              expenses?.map((expense, index) => (
+                <Box key={index}>
+                  <Flex className="justify-between group items-center">
+                    <Box>
+                      <Text size="lg" fw={600}>
+                        {expense?.category}
+                      </Text>
+                      <Text size="sm">{formatDate(expense?.date)}</Text>
+                    </Box>
+                    <div className="flex gap-2">
+                      <Title order={5}>BDT {expense?.amount}</Title>
+                      <IconPencil
+                        className="group-hover:block hidden cursor-pointer"
+                        style={{ width: "25px", height: "25px" }}
+                        stroke={1.5}
+                      />
+                      <IconTrash
+                        className="group-hover:block hidden cursor-pointer"
+                        style={{ width: "25px", height: "25px" }}
+                        stroke={1.5}
+                      />
+                    </div>
+                  </Flex>
+                  <Divider orientation="horizontal" my={5} />
+                </Box>
+              ))
+            )}
           </Box>
         </Box>
       </div>
