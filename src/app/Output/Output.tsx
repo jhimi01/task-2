@@ -49,6 +49,11 @@ export default function Output() {
     });
   };
 
+  const handleTrash = (id: number) => {
+    const result = expenses.filter((exp) => expenses);
+    console.log(result);
+  };
+
   return (
     <Box>
       <Flex
@@ -178,6 +183,7 @@ export default function Output() {
                         stroke={1.5}
                       />
                       <IconTrash
+                        onClick={handleTrash}
                         className="group-hover:block hidden cursor-pointer"
                         style={{ width: "25px", height: "25px" }}
                         stroke={1.5}
@@ -272,6 +278,7 @@ export default function Output() {
                         stroke={1.5}
                       />
                       <IconTrash
+                        onClick={() => handleTrash(expense?.id)}
                         className="group-hover:block hidden cursor-pointer"
                         style={{ width: "25px", height: "25px" }}
                         stroke={1.5}
