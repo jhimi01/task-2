@@ -26,21 +26,30 @@ import {
   IconSearch,
   IconArrowsLeftRight,
 } from "@tabler/icons-react";
-import React from "react";
+import React, { useContext } from "react";
 import "@mantine/dates/styles.css";
+import AccountContext from "@/contexts/AccountContext";
 
 export default function Output() {
+
+  const { income, expenses } = useContext(AccountContext);
+
+const totalIncome = income.reduce((acc, curr) => acc + curr.amount, 0);
+const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
+const balance = totalIncome - totalExpense;
+
+
   const isSmallDevice = useMediaQuery("(max-width: 768px)");
 
   return (
     <Box>
-      <Flex
+     <Flex
         className="border py-5 mb-5 rounded-md bg-slate-50 flex items-center mt-5 md:mt-0 justify-around text-slate-800"
         gap={isSmallDevice ? "md" : "xl"} // Adjust spacing based on screen size
       >
-        <div className="text-center">
+        <div className={`text-center ${balance < 0 && "bg-red-500"}`}>
           <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>
-            BDT 20000
+            BDT {balance}
           </Title>
           <Text
             size={isSmallDevice ? "10px" : "sm"}
@@ -52,7 +61,7 @@ export default function Output() {
         <Divider orientation="vertical" />
         <div className="text-center">
           <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>
-            BDT 20000
+            BDT {totalIncome}
           </Title>
           <Text
             size={isSmallDevice ? "10px" : "sm"}
@@ -64,7 +73,7 @@ export default function Output() {
         <Divider orientation="vertical" />
         <div className="text-center">
           <Title order={3} size={isSmallDevice ? rem(14) : rem(24)}>
-            BDT 20000
+            BDT {totalExpense}
           </Title>
           <Text
             size={isSmallDevice ? "10px" : "sm"}
@@ -73,7 +82,7 @@ export default function Output() {
             Total Expense
           </Text>
         </div>
-      </Flex>
+    </Flex>
 
       <div className="justify-between md:flex gap-5 rounded-md">
         {/* income out */}

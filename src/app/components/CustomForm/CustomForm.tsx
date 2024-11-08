@@ -16,9 +16,34 @@ import { IoIosArrowDown } from "react-icons/io";
 import classes from "./CustomForm.module.css";
 import { IconCalendar } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
+import { useContext } from "react";
+import AccountContext from "@/contexts/AccountContext";
 
 export default function CustomForm() {
-  const form = useForm({});
+  const { setIncome, setExpenses } = useContext(AccountContext);
+
+  const form = useForm({
+    initialValues: {
+      category: "",
+      amount: 0,
+      date: "",
+    },
+  });
+
+  const handleSubmit = (values: {
+    category: string;
+    amount: number;
+    date: string;
+  }) => {
+    const savedData = JSON.parse(localStorage.getItem("expenses") || "[]");
+    const newEntry = { ...values, id: Date.now() };
+    const updatedData = [...savedData, newEntry];
+
+    localStorage.setItem("expenses", JSON.stringify(updatedData));
+
+    // Update context state to reflect the new data
+    setExpenses(updatedData);
+  };
 
   return (
     <Box className="border rounded bg-slate-50 py-5 px-5">
@@ -49,7 +74,7 @@ export default function CustomForm() {
           {/* Expense form */}
           <Box
             component="form"
-            onSubmit={form.onSubmit((values) => console.log(values))}
+            onSubmit={form.onSubmit(handleSubmit)}
             className="space-y-4 mt-5"
           >
             <Select
@@ -68,7 +93,7 @@ export default function CustomForm() {
               rightSection={
                 <IoIosArrowDown style={{ width: rem(16), height: rem(16) }} />
               }
-              {...form.getInputProps('category')}
+              {...form.getInputProps("category")}
             />
             <NumberInput
               label="Amount"
