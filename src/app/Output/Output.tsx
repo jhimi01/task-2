@@ -190,7 +190,10 @@ export default function Output() {
                       />
                     </div>
                   </Flex>
-                  <Divider orientation="horizontal" my={5} />
+                  {/* Conditional divider */}
+                  {index !== income.length - 1 && (
+                    <Divider orientation="horizontal" my={5} />
+                  )}
                 </Box>
               ))
             )}
@@ -285,7 +288,10 @@ export default function Output() {
                       />
                     </div>
                   </Flex>
-                  <Divider orientation="horizontal" my={5} />
+                  {/* Conditional divider */}
+                  {index !== expenses.length - 1 && (
+                    <Divider orientation="horizontal" my={5} />
+                  )}
                 </Box>
               ))
             )}
