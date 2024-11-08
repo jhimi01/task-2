@@ -1,6 +1,12 @@
-'use client'
+"use client";
 
-import React, { createContext, useState, ReactNode } from "react";
+import React, {
+  createContext,
+  useState,
+  ReactNode,
+  useEffect,
+  useContext,
+} from "react";
 
 // Define the shape of the context value
 interface AccountContextType {
@@ -19,16 +25,35 @@ interface AccountProviderProps {
 }
 
 // Define the provider component with an explicit return type of JSX.Element
-export const AccountProvider = ({ children }: AccountProviderProps): JSX.Element => {
+export const AccountProvider = ({
+  children,
+}: AccountProviderProps): JSX.Element => {
   const [income, setIncome] = useState<number[]>([]);
   const [expenses, setExpenses] = useState<number[]>([]);
 
+  useEffect(() => {
+    const savedIncome = JSON.parse(localStorage.getItem("income") || "[]");
+    const savedExpenses = JSON.parse(localStorage.getItem("expenses") || "[]");
+    setIncome(savedIncome);
+    setExpenses(savedExpenses);
+  }, []);
+
   return (
-    <AccountContext.Provider value={{ income, setIncome, expenses, setExpenses }}>
+    <AccountContext.Provider
+      value={{ income, setIncome, expenses, setExpenses }}
+    >
       {children}
     </AccountContext.Provider>
   );
 };
 
-export default AccountContext;
+// Custom hook to use the AccountContext safely
+export const useAccount = () => {
+  const context = useContext(AccountContext);
+  if (!context) {
+    throw new Error("useAccount must be used within an AccountProvider");
+  }
+  return context;
+};
 
+export default AccountContext;

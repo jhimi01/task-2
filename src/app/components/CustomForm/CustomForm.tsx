@@ -17,10 +17,10 @@ import classes from "./CustomForm.module.css";
 import { IconCalendar } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { useContext } from "react";
-import AccountContext from "@/contexts/AccountContext";
+import AccountContext, { useAccount } from "@/contexts/AccountContext";
 
 export default function CustomForm() {
-  const { setIncome, setExpenses } = useContext(AccountContext);
+  const { setIncome, setExpenses } = useAccount();
 
   const form = useForm({
     initialValues: {

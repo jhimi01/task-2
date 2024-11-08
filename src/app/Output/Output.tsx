@@ -28,11 +28,11 @@ import {
 } from "@tabler/icons-react";
 import React, { useContext } from "react";
 import "@mantine/dates/styles.css";
-import AccountContext from "@/contexts/AccountContext";
+import AccountContext, { useAccount } from "@/contexts/AccountContext";
 
 export default function Output() {
 
-  const { income, expenses } = useContext(AccountContext);
+  const { income, expenses } = useAccount();
 
 const totalIncome = income.reduce((acc, curr) => acc + curr.amount, 0);
 const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
