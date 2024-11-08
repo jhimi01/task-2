@@ -38,6 +38,16 @@ export const AccountProvider = ({
     setExpenses(savedExpenses);
   }, []);
 
+  // Save income to localStorage when it updates
+  useEffect(() => {
+    localStorage.setItem("income", JSON.stringify(income));
+  }, [income]);
+
+  // Save expenses to localStorage when it updates
+  useEffect(() => {
+    localStorage.setItem("expenses", JSON.stringify(expenses));
+  }, [expenses]);
+
   return (
     <AccountContext.Provider
       value={{ income, setIncome, expenses, setExpenses }}

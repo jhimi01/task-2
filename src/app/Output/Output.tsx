@@ -31,7 +31,7 @@ import "@mantine/dates/styles.css";
 import AccountContext, { useAccount } from "@/contexts/AccountContext";
 
 export default function Output() {
-  const { income, expenses } = useAccount();
+  const { income, expenses, setExpenses } = useAccount();
 
   console.log(expenses);
 
@@ -50,8 +50,9 @@ export default function Output() {
   };
 
   const handleTrash = (id: number) => {
-    const result = expenses.filter((exp) => expenses);
-    console.log(result);
+    const result = expenses.filter((exp) => exp.id !== id);
+    localStorage.setItem("expenses", JSON.stringify(result));
+    setExpenses(result);
   };
 
   return (
