@@ -3,16 +3,20 @@ import Swal from "sweetalert2";
 import {
   ActionIcon,
   Box,
+  Button,
   Center,
   Checkbox,
   Divider,
   Flex,
   Menu,
+  Modal,
+  NumberInput,
   rem,
+  Select,
   Text,
   Title,
 } from "@mantine/core";
-import { useMediaQuery } from "@mantine/hooks";
+import { useDisclosure, useMediaQuery } from "@mantine/hooks";
 import {
   IconAdjustments,
   IconLineHeight,
@@ -20,11 +24,33 @@ import {
   IconWalletOff,
   IconPencil,
   IconTrash,
+  IconCalendar,
 } from "@tabler/icons-react";
 import "@mantine/dates/styles.css";
 import { useAccount } from "@/contexts/AccountContext";
+import { useForm } from "@mantine/form";
+import { DateInput } from "@mantine/dates";
+import { IoIosArrowDown } from "react-icons/io";
+import { useEffect, useState } from "react";
+
+interface EditIncome {
+  id: number;
+  incomecategory: string;
+  incomeamount: number;
+  incomedate: string;
+}
+
+interface EditExpenses {
+  id: number;
+  category: string;
+  amount: number;
+  date: string;
+}
 
 export default function Output() {
+  const [editIncome, setEditIncome] = useState<EditIncome[]>([]);
+  const [editExpenses, setEditExpenses] = useState<EditExpenses[]>([]);
+
   const { income, expenses, setExpenses, setIncome } = useAccount();
 
   const totalIncome = income.reduce((acc, curr) => acc + curr.incomeamount, 0);
@@ -33,7 +59,7 @@ export default function Output() {
 
   const isSmallDevice = useMediaQuery("(max-width: 768px)");
 
-  const formatDate = (date: string) => {
+  const formatDate = (date: any) => {
     return new Date(date).toLocaleDateString("en-Us", {
       day: "numeric",
       month: "long",
@@ -41,7 +67,6 @@ export default function Output() {
     });
   };
 
-  // delete items from expenses
   const handleTrashexpenses = (id: number) => {
     Swal.fire({
       title: "Are you sure?",
@@ -56,15 +81,11 @@ export default function Output() {
         const result = expenses.filter((exp) => exp.id !== id);
         localStorage.setItem("expenses", JSON.stringify(result));
         setExpenses(result);
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
+        Swal.fire("Deleted!", "Your file has been deleted.", "success");
       }
     });
   };
-  // delete items from income
+
   const handleTrashIncome = (id: number) => {
     Swal.fire({
       title: "Are you sure?",
@@ -79,13 +100,62 @@ export default function Output() {
         const result = income.filter((inc) => inc.id !== id);
         localStorage.setItem("income", JSON.stringify(result));
         setIncome(result);
-        Swal.fire({
-          title: "Deleted!",
-          text: "Your file has been deleted.",
-          icon: "success",
-        });
+        Swal.fire("Deleted!", "Your file has been deleted.", "success");
       }
     });
+  };
+
+  const [openedExpense, { open: openExpense, close: closeExpense }] =
+    useDisclosure(false);
+  const [openedIncome, { open: openIncome, close: closeIncome }] =
+    useDisclosure(false);
+
+  const formExpense = useForm({
+    initialValues: {
+      category: "",
+      amount: 0,
+      date: "",
+    },
+  });
+
+  const formIncome = useForm({
+    initialValues: {
+      incomecategory: "",
+      incomeamount: 0,
+      incomedate: "",
+    },
+  });
+
+  useEffect(() => {
+    if (editExpenses) {
+      formExpense.setValues({
+        category: editExpenses.category,
+        amount: editExpenses.amount,
+        date: new Date(editExpenses.date),
+      });
+    }
+  }, [editExpenses]);
+
+  useEffect(() => {
+    if (editIncome) {
+      formIncome.setValues({
+        incomecategory: editIncome.incomecategory,
+        incomeamount: editIncome.incomeamount,
+        incomedate: new Date(editIncome.incomedate),
+      });
+    }
+  }, [editIncome]);
+
+  const handleEditExpense = (id: number) => {
+    const findData = expenses.find((expense) => expense.id === id);
+    setEditExpenses(findData);
+    openExpense();
+  };
+
+  const handleEditIncome = (id: number) => {
+    const findData = income.find((incomeItem) => incomeItem.id === id);
+    setEditIncome(findData);
+    openIncome();
   };
 
   return (
@@ -210,9 +280,8 @@ export default function Output() {
                     <div className="flex gap-2">
                       <Title order={5}>BDT {incomeitem?.incomeamount}</Title>
                       <IconPencil
+                        onClick={() => handleEditIncome(incomeitem?.id)}
                         className="group-hover:block hidden cursor-pointer"
-                        style={{ width: "25px", height: "25px" }}
-                        stroke={1.5}
                       />
                       <IconTrash
                         onClick={() => handleTrashIncome(incomeitem?.id)}
@@ -295,8 +364,8 @@ export default function Output() {
           <Box className="p-5 text-slate-800">
             {expenses?.length === 0 ? (
               <Center>
-              <Title order={4}>No Expenses</Title>
-            </Center>
+                <Title order={4}>No Expenses</Title>
+              </Center>
             ) : (
               expenses?.map((expense, index) => (
                 <Box key={index}>
@@ -310,6 +379,8 @@ export default function Output() {
                     <div className="flex gap-2">
                       <Title order={5}>BDT {expense?.amount}</Title>
                       <IconPencil
+                        // onClick={open}
+                        onClick={() => handleEditExpense(expense?.id)}
                         className="group-hover:block hidden cursor-pointer"
                         style={{ width: "25px", height: "25px" }}
                         stroke={1.5}
@@ -332,6 +403,94 @@ export default function Output() {
           </Box>
         </Box>
       </div>
+
+      {/* expense Edit Modal ------- */}
+      <Modal opened={openedExpense} onClose={closeExpense}>
+        <Title order={2} c={"#333"}>
+          Edit information
+        </Title>
+        <Box
+          component="form"
+          onSubmit={formExpense.onSubmit((values) => {
+            // Handle the form submission with updated values
+            const updatedExpenses = expenses.map((expense) =>
+              expense.id === editExpenses.id
+                ? { ...expense, ...values }
+                : expense
+            );
+            setExpenses(updatedExpenses);
+            localStorage.setItem("expenses", JSON.stringify(updatedExpenses));
+            closeExpense();
+          })}
+          className="space-y-4 mt-3"
+        >
+          <Select
+            label="Category"
+            placeholder="Select a category"
+            data={[
+              "Education",
+              "Food",
+              "Health",
+              "Bill",
+              "Insurance",
+              "Tax",
+              "Transport",
+              "Telephone",
+            ]}
+            rightSection={
+              <IoIosArrowDown style={{ width: rem(16), height: rem(16) }} />
+            }
+            {...formExpense.getInputProps("category")}
+          />
+          <NumberInput
+            label="Amount"
+            placeholder="12345"
+            {...formExpense.getInputProps("amount")}
+          />
+          <DateInput
+            label="Date"
+            placeholder="dd/mm/yyyy"
+            rightSection={
+              <IconCalendar style={{ width: rem(16), height: rem(16) }} />
+            }
+            {...formExpense.getInputProps("date")}
+          />
+          <Button fullWidth type="submit">
+            Save
+          </Button>
+        </Box>
+      </Modal>
+
+      {/* Income Edit Modal */}
+      <Modal opened={openedIncome} onClose={closeIncome}>
+        <Title order={2}>Edit Income</Title>
+        <Box
+          component="form"
+          onSubmit={formIncome.onSubmit((values) => {
+            const updatedIncome = income.map((item) =>
+              item.id === editIncome?.id ? { ...item, ...values } : item
+            );
+            setIncome(updatedIncome);
+            localStorage.setItem("income", JSON.stringify(updatedIncome));
+            closeIncome();
+          })}
+          className="space-y-4 mt-3"
+        >
+          <Select
+            label="Category"
+            data={["Salary", "Outsourcing", "Bond", "Dividend"]}
+            {...formIncome.getInputProps("incomecategory")}
+          />
+          <NumberInput
+            label="Amount"
+            {...formIncome.getInputProps("incomeamount")}
+          />
+          <DateInput label="Date" {...formIncome.getInputProps("incomedate")} />
+          <Button fullWidth type="submit">
+            Save
+          </Button>
+        </Box>
+      </Modal>
     </Box>
   );
 }

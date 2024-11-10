@@ -9,14 +9,14 @@ import React, {
 } from "react";
 
 // Define interfaces for income and expense items
-interface IncomeItem {
+export interface IncomeItem {
   id: number;
   incomecategory: string;
   incomeamount: number;
   incomedate: string;
 }
 
-interface ExpenseItem {
+export interface ExpenseItem {
   id: number;
   category: string;
   amount: number;
