@@ -14,11 +14,10 @@ import { IoIosArrowDown } from "react-icons/io";
 import classes from "./CustomForm.module.css";
 import { IconCalendar } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
-import  { useAccount } from "@/contexts/AccountContext";
+import { useAccount } from "@/contexts/AccountContext";
 
 export default function CustomForm() {
   const { setIncome, setExpenses } = useAccount();
-
 
   const formExpense = useForm({
     initialValues: {
@@ -62,7 +61,6 @@ export default function CustomForm() {
 
     localStorage.setItem("expenses", JSON.stringify(updatedData));
 
-
     setExpenses(updatedData);
   };
 
@@ -90,7 +88,6 @@ export default function CustomForm() {
           </Tabs.Tab>
         </Tabs.List>
 
-        
         <Tabs.Panel value="expense" pt="xs">
           {/* Expense form */}
           <Box

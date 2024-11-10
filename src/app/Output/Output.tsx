@@ -1,4 +1,5 @@
 "use client";
+import Swal from "sweetalert2";
 import {
   ActionIcon,
   Box,
@@ -26,9 +27,6 @@ import { useAccount } from "@/contexts/AccountContext";
 export default function Output() {
   const { income, expenses, setExpenses, setIncome } = useAccount();
 
-  console.log("income", income);
-  console.log("expenses", expenses);
-
   const totalIncome = income.reduce((acc, curr) => acc + curr.incomeamount, 0);
   const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
   const balance = totalIncome - totalExpense;
@@ -45,15 +43,49 @@ export default function Output() {
 
   // delete items from expenses
   const handleTrashexpenses = (id: number) => {
-    const result = expenses.filter((exp) => exp.id !== id);
-    localStorage.setItem("expenses", JSON.stringify(result));
-    setExpenses(result);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const result = expenses.filter((exp) => exp.id !== id);
+        localStorage.setItem("expenses", JSON.stringify(result));
+        setExpenses(result);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    });
   };
   // delete items from income
   const handleTrashIncome = (id: number) => {
-    const result = income.filter((inc) => inc.id !== id);
-    localStorage.setItem("income", JSON.stringify(result));
-    setIncome(result);
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const result = income.filter((inc) => inc.id !== id);
+        localStorage.setItem("income", JSON.stringify(result));
+        setIncome(result);
+        Swal.fire({
+          title: "Deleted!",
+          text: "Your file has been deleted.",
+          icon: "success",
+        });
+      }
+    });
   };
 
   return (
@@ -262,7 +294,9 @@ export default function Output() {
           <Divider orientation="horizontal" />
           <Box className="p-5 text-slate-800">
             {expenses?.length === 0 ? (
-              <Text>No expenses</Text>
+              <Center>
+              <Title order={4}>No Expenses</Title>
+            </Center>
             ) : (
               expenses?.map((expense, index) => (
                 <Box key={index}>
