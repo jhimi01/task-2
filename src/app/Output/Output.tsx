@@ -32,7 +32,7 @@ import { useForm } from "@mantine/form";
 import { DateInput } from "@mantine/dates";
 import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useState } from "react";
-import useCounterStore from "../useCounterStore";
+// import useCounterStore from "../useCounterStore";
 
 interface EditIncome {
   id: number;
@@ -50,11 +50,13 @@ interface EditExpenses {
 
 export default function Output() {
   // soter --------
-  const { count, increment, decrement, reset } = useCounterStore();
+  // const { count, increment, decrement, reset } = useCounterStore();
   const [editIncome, setEditIncome] = useState<EditIncome[]>([]);
   const [editExpenses, setEditExpenses] = useState<EditExpenses[]>([]);
 
   const { income, expenses, setExpenses, setIncome } = useAccount();
+
+  console.log(income);
 
   const totalIncome = income.reduce((acc, curr) => acc + curr.incomeamount, 0);
   const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
@@ -495,13 +497,6 @@ export default function Output() {
           </Button>
         </Box>
       </Modal>
-
-      <div className="flex flex-col space-y-4">
-        <h1>Count: {count}</h1>
-        <Button onClick={increment}>increment</Button>
-        <Button onClick={decrement}>Decrement</Button>
-        <Button onClick={reset}>reset</Button>
-      </div>
     </Box>
   );
 }

@@ -15,6 +15,7 @@ import classes from "./CustomForm.module.css";
 import { IconCalendar } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { useAccount } from "@/contexts/AccountContext";
+import { useCounterStore } from "@/app/useCounterStore";
 
 export default function CustomForm() {
   const { setIncome, setExpenses } = useAccount();
@@ -46,8 +47,13 @@ export default function CustomForm() {
 
     localStorage.setItem("income", JSON.stringify(updatedData));
 
+    // addIncome(values);
     setIncome(updatedData);
   };
+
+  // const handleSubmitIncome = (values) => {
+  //   useCounterStore.getState().addIncome(values);  // Adds income to the store
+  // };
 
   // expenses submition ---------
   const handleSubmit = (values: {
