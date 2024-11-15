@@ -19,6 +19,8 @@ import { useCounterStore } from "@/app/useCounterStore";
 
 export default function CustomForm() {
   const { setIncome, setExpenses } = useAccount();
+  const addIncome = useCounterStore((state) => state.addIncome);
+  const addExpenses = useCounterStore((state) => state.addExpenses);
 
   const formExpense = useForm({
     initialValues: {
@@ -35,40 +37,32 @@ export default function CustomForm() {
       incomedate: "",
     },
   });
-  // income submition ---------
-  const handleSubmitIncome = (values: {
-    incomecategory: string;
-    incomeamount: number;
-    incomedate: string;
-  }) => {
-    const savedDate = JSON.parse(localStorage.getItem("income") || "[]");
-    const newArray = { ...values, id: Date.now() };
-    const updatedData = [...savedDate, newArray];
+// income submission (simplified)
+const handleSubmitIncome = (values: {
+  incomecategory: string;
+  incomeamount: number;
+  incomedate: string;
+  id: number;  // Added id for direct storage in context state
+}) => {
+  addIncome({ ...values, id: Date.now() }); // Directly passing values with an added id
+  const updatedIncomeData = useCounterStore.getState().income;
+  localStorage.setItem("income", JSON.stringify(updatedIncomeData));
+  setIncome(updatedIncomeData);
+};
 
-    localStorage.setItem("income", JSON.stringify(updatedData));
+// expense submission (simplified)
+const handleSubmit = (values: {
+  category: string;
+  amount: number;
+  date: string;
+  id: number;
+}) => {
+  addExpenses({ ...values, id: Date.now() }); // Directly passing values with an added id
+  const updatedExpenseData = useCounterStore.getState().expenses;
+  localStorage.setItem("expenses", JSON.stringify(updatedExpenseData));
+  setExpenses(updatedExpenseData);
+};
 
-    // addIncome(values);
-    setIncome(updatedData);
-  };
-
-  // const handleSubmitIncome = (values) => {
-  //   useCounterStore.getState().addIncome(values);  // Adds income to the store
-  // };
-
-  // expenses submition ---------
-  const handleSubmit = (values: {
-    category: string;
-    amount: number;
-    date: string;
-  }) => {
-    const savedData = JSON.parse(localStorage.getItem("expenses") || "[]");
-    const newEntry = { ...values, id: Date.now() };
-    const updatedData = [...savedData, newEntry];
-
-    localStorage.setItem("expenses", JSON.stringify(updatedData));
-
-    setExpenses(updatedData);
-  };
 
   return (
     <Box className="border rounded bg-slate-50 py-5 px-5">

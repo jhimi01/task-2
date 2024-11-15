@@ -56,7 +56,7 @@ export default function Output() {
 
   const { income, expenses, setExpenses, setIncome } = useAccount();
 
-  console.log(income);
+  console.log(income[1]);
 
   const totalIncome = income.reduce((acc, curr) => acc + curr.incomeamount, 0);
   const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
