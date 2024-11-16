@@ -1,5 +1,5 @@
 import CustomForm from "./components/CustomForm/CustomForm";
-import Output from "./Output/Output";
+import Output from "./components/Output/Output";
 
 export default function Home() {
   return (
