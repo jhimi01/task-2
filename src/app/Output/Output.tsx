@@ -38,21 +38,22 @@ interface EditIncome {
   id: number;
   incomecategory: string;
   incomeamount: number;
-  incomedate: string;
+  incomedate: any | null;
 }
 
 interface EditExpenses {
   id: number;
   category: string;
   amount: number;
-  date: string;
+  date: any | null;
 }
 
 export default function Output() {
   // soter --------
   // const { count, increment, decrement, reset } = useCounterStore();
-  const [editIncome, setEditIncome] = useState<EditIncome[]>([]);
-  const [editExpenses, setEditExpenses] = useState<EditExpenses[]>([]);
+  const [editIncome, setEditIncome] = useState<EditIncome | null>(null);
+
+  const [editExpenses, setEditExpenses] = useState<EditExpenses | null>(null);
 
   const { income, expenses, setExpenses, setIncome } = useAccount();
 
@@ -420,7 +421,7 @@ export default function Output() {
           onSubmit={formExpense.onSubmit((values) => {
             // Handle the form submission with updated values
             const updatedExpenses = expenses.map((expense) =>
-              expense.id === editExpenses.id
+              expense?.id === editExpenses?.id
                 ? { ...expense, ...values }
                 : expense
             );

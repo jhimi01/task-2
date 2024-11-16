@@ -13,14 +13,14 @@ export interface IncomeItem {
   id: number;
   incomecategory: string;
   incomeamount: number;
-  incomedate: string;
+  incomedate: any;
 }
 
 export interface ExpenseItem {
   id: number;
   category: string;
   amount: number;
-  date: string;
+  date: any;
 }
 
 interface AccountContextType {

@@ -3,12 +3,12 @@ import { persist, createJSONStorage } from "zustand/middleware";
 
 // Define the state and actions in TypeScript
 interface CounterState {
-  income: Array<{ id: number; category: string; amount: number; date: string }>;
-  expenses: Array<{ id: number; category: string; amount: number; date: string }>;
-  addIncome: (value: { category: string; amount: number; date: string }) => void;
-  addExpenses: (value: { category: string; amount: number; date: string }) => void;
-  editIncome: (value: { id: number; category: string; amount: number; date: string }) => void;
-  editExpenses: (value: { id: number; category: string; amount: number; date: string }) => void;
+  income: Array<{ id: number; category: string; amount: number; date: any }>;
+  expenses: Array<{ id: number; category: string; amount: number; date: any }>;
+  addIncome: (value: { category: string; amount: number; date: any }) => void;
+  addExpenses: (value: { category: string; amount: number; date: any }) => void;
+  editIncome: (value: { id: number; category: string; amount: number; date: any }) => void;
+  editExpenses: (value: { id: number; category: string; amount: number; date: any }) => void;
   removeIncome: (id: number) => void;
   removeExpenses: (id: number) => void;
 }

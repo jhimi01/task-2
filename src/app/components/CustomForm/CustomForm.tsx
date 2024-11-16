@@ -14,8 +14,30 @@ import { IoIosArrowDown } from "react-icons/io";
 import classes from "./CustomForm.module.css";
 import { IconCalendar } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
+import { z } from "zod";
+import { zodResolver } from "@hookform/resolvers/zod"; // Optional if you use React Hook Form integration
 import { useAccount } from "@/contexts/AccountContext";
 import { useCounterStore } from "@/app/useCounterStore";
+import { useState } from "react";
+
+// Define Zod schemas
+const expenseSchema = z.object({
+  category: z.string().min(1, "Category is required"),
+  amount: z
+    .number()
+    .min(1, "Amount must be greater than 0")
+    .max(1000000, "Amount must not exceed 1,000,000"),
+  // date: z.string().min(1, "Date is required"),
+});
+
+const incomeSchema = z.object({
+  incomecategory: z.string().min(1, "Income category is required"),
+  incomeamount: z
+    .number()
+    .min(1, "Amount must be greater than 0")
+    .max(1000000, "Amount must not exceed 1,000,000"),
+  // incomedate: z.string().min(1, "Date is required"),
+});
 
 export default function CustomForm() {
   const { setIncome, setExpenses } = useAccount();
@@ -28,6 +50,10 @@ export default function CustomForm() {
       amount: 0,
       date: "",
     },
+    validate: (values) => {
+      const result = expenseSchema.safeParse(values);
+      return result.success ? {} : result.error.flatten().fieldErrors;
+    },
   });
 
   const formIncome = useForm({
@@ -36,33 +62,42 @@ export default function CustomForm() {
       incomeamount: 0,
       incomedate: "",
     },
+    validate: (values) => {
+      const result = incomeSchema.safeParse(values);
+      return result.success ? {} : result.error.flatten().fieldErrors;
+    },
   });
-// income submission (simplified)
-const handleSubmitIncome = (values: {
-  incomecategory: string;
-  incomeamount: number;
-  incomedate: string;
-  id: number;  // Added id for direct storage in context state
-}) => {
-  addIncome({ ...values, id: Date.now() }); // Directly passing values with an added id
-  const updatedIncomeData = useCounterStore.getState().income;
-  localStorage.setItem("income", JSON.stringify(updatedIncomeData));
-  setIncome(updatedIncomeData);
-};
 
-// expense submission (simplified)
-const handleSubmit = (values: {
-  category: string;
-  amount: number;
-  date: string;
-  id: number;
-}) => {
-  addExpenses({ ...values, id: Date.now() }); // Directly passing values with an added id
-  const updatedExpenseData = useCounterStore.getState().expenses;
-  localStorage.setItem("expenses", JSON.stringify(updatedExpenseData));
-  setExpenses(updatedExpenseData);
-};
+  // income submition ---------
+  const handleSubmitIncome = (values: {
+    incomecategory: string;
+    incomeamount: number;
+    incomedate: any;
+  }) => {
+    const savedDate = JSON.parse(localStorage.getItem("income") || "[]");
+    const newArray = { ...values, id: Date.now() };
+    const updatedData = [...savedDate, newArray];
 
+    localStorage.setItem("income", JSON.stringify(updatedData));
+
+    // addIncome(values);
+    setIncome(updatedData);
+  };
+
+  // expenses submition ---------
+  const handleSubmit = (values: {
+    category: string;
+    amount: number;
+    date: any;
+  }) => {
+    const savedData = JSON.parse(localStorage.getItem("expenses") || "[]");
+    const newEntry = { ...values, id: Date.now() };
+    const updatedData = [...savedData, newEntry];
+
+    localStorage.setItem("expenses", JSON.stringify(updatedData));
+
+    setExpenses(updatedData);
+  };
 
   return (
     <Box className="border rounded bg-slate-50 py-5 px-5">
@@ -89,7 +124,6 @@ const handleSubmit = (values: {
         </Tabs.List>
 
         <Tabs.Panel value="expense" pt="xs">
-          {/* Expense form */}
           <Box
             component="form"
             onSubmit={formExpense.onSubmit(handleSubmit)}
@@ -133,7 +167,6 @@ const handleSubmit = (values: {
         </Tabs.Panel>
 
         <Tabs.Panel value="income" pt="xs">
-          {/* income form */}
           <Box
             component="form"
             onSubmit={formIncome.onSubmit(handleSubmitIncome)}
