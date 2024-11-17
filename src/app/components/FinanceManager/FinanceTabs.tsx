@@ -11,7 +11,7 @@ import {
 } from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { IoIosArrowDown } from "react-icons/io";
-import classes from "./CustomForm.module.css";
+import classes from "./FinanceTabs.module.css";
 import { IconCalendar } from "@tabler/icons-react";
 import { useForm } from "@mantine/form";
 import { z } from "zod";
@@ -19,6 +19,7 @@ import { zodResolver } from "@hookform/resolvers/zod"; // Optional if you use Re
 import { useAccount } from "@/contexts/AccountContext";
 import { useCounterStore } from "@/app/useCounterStore";
 import { useState } from "react";
+import CustomForm from "./CustomForm";
 
 // Define Zod schemas
 const expenseSchema = z.object({
@@ -39,37 +40,14 @@ const incomeSchema = z.object({
   // incomedate: z.string().min(1, "Date is required"),
 });
 
-export default function CustomForm() {
+export default function FinanceTabs() {
   const { setIncome, setExpenses } = useAccount();
   const addIncome = useCounterStore((state) => state.addIncome);
   const addExpenses = useCounterStore((state) => state.addExpenses);
 
-  const formExpense = useForm({
-    initialValues: {
-      category: "",
-      amount: 0,
-      date: "",
-    },
-    validate: (values) => {
-      const result = expenseSchema.safeParse(values);
-      return result.success ? {} : result.error.flatten().fieldErrors;
-    },
-  });
-
-  const formIncome = useForm({
-    initialValues: {
-      incomecategory: "",
-      incomeamount: 0,
-      incomedate: "",
-    },
-    validate: (values) => {
-      const result = incomeSchema.safeParse(values);
-      return result.success ? {} : result.error.flatten().fieldErrors;
-    },
-  });
 
   // income submition ---------
-  const handleSubmitIncome = (values: {
+  const handleIncomeSubmit = (values: {
     incomecategory: string;
     incomeamount: number;
     incomedate: any;
@@ -77,6 +55,7 @@ export default function CustomForm() {
     const savedDate = JSON.parse(localStorage.getItem("income") || "[]");
     const newArray = { ...values, id: Date.now() };
     const updatedData = [...savedDate, newArray];
+    console.log("this is a new income");
 
     localStorage.setItem("income", JSON.stringify(updatedData));
 
@@ -85,7 +64,7 @@ export default function CustomForm() {
   };
 
   // expenses submition ---------
-  const handleSubmit = (values: {
+  const handleExpenseSubmit = (values: {
     category: string;
     amount: number;
     date: any;
@@ -124,77 +103,52 @@ export default function CustomForm() {
         </Tabs.List>
 
         <Tabs.Panel value="expense" pt="xs">
-          <Box
-            component="form"
-            onSubmit={formExpense.onSubmit(handleSubmit)}
-            className="space-y-4 mt-5"
-          >
-            <Select
-              label="Category"
-              placeholder="Select a category"
-              data={[
-                "Education",
-                "Food",
-                "Health",
-                "Bill",
-                "Insurance",
-                "Tax",
-                "Transport",
-                "Telephone",
-              ]}
-              rightSection={
-                <IoIosArrowDown style={{ width: rem(16), height: rem(16) }} />
-              }
-              {...formExpense.getInputProps("category")}
-            />
-            <NumberInput
-              label="Amount"
-              placeholder="12345"
-              {...formExpense.getInputProps("amount")}
-            />
-            <DateInput
-              label="Date"
-              placeholder="dd/mm/yyyy"
-              rightSection={
-                <IconCalendar style={{ width: rem(16), height: rem(16) }} />
-              }
-              {...formExpense.getInputProps("date")}
-            />
-            <Button w="100%" type="submit">
-              Save
-            </Button>
-          </Box>
+          <CustomForm
+            title="Expense"
+            categoryLabel="Category"
+            categoryData={[
+              "Education",
+              "Food",
+              "Health",
+              "Bill",
+              "Insurance",
+              "Tax",
+              "Transport",
+              "Telephone",
+            ]}
+            amountLabel="Amount"
+            dateLabel="Date"
+            initialValues={{ category: "", amount: 0, date: "" }}
+            schema={expenseSchema}
+            onSubmit={handleExpenseSubmit}
+            fieldNames={{
+              category: "category",
+              amount: "amount",
+              date: "date",
+            }}
+          />
         </Tabs.Panel>
 
         <Tabs.Panel value="income" pt="xs">
-          <Box
-            component="form"
-            onSubmit={formIncome.onSubmit(handleSubmitIncome)}
-            className="space-y-4 mt-5"
-          >
-            <Select
-              label="Category"
-              placeholder="Select a category"
-              data={["Salary", "Outsourcing", "Bond", "Dividend"]}
-              {...formIncome.getInputProps("incomecategory")}
-              rightSection={
-                <IoIosArrowDown style={{ width: rem(16), height: rem(16) }} />
-              }
-            />
-            <NumberInput
-              label="Amount"
-              placeholder="12345"
-              {...formIncome.getInputProps("incomeamount")}
-            />
-            <DateInput
-              label="Date"
-              placeholder="dd/mm/yyyy"
-              {...formIncome.getInputProps("incomedate")}
-            />
-            <Button type="submit" w="100%">
-              Save
-            </Button>
-          </Box>
+          <CustomForm
+            title="Income"
+            categoryLabel="Income Category"
+            categoryData={["Salary", "Outsourcing", "Bond", "Dividend"]}
+            amountLabel="Income Amount"
+            dateLabel="Income Date"
+            initialValues={{
+              incomecategory: "",
+              incomeamount: 0,
+              incomedate: "",
+            }}
+            schema={incomeSchema}
+            onSubmit={handleIncomeSubmit}
+            fieldNames={{
+              category: "incomecategory",
+              amount: "incomeamount",
+              date: "incomedate",
+            }}
+          />
         </Tabs.Panel>
       </Tabs>
     </Box>
