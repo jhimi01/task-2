@@ -42,8 +42,7 @@ const incomeSchema = z.object({
 
 export default function FinanceTabs() {
   const { setIncome, setExpenses } = useAccount();
-  const addIncome = useCounterStore((state) => state.addIncome);
-  const addExpenses = useCounterStore((state) => state.addExpenses);
+
 
   // income submition ---------
   const handleIncomeSubmit = (values: {
