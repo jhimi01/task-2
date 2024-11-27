@@ -32,6 +32,8 @@ import { useForm } from "@mantine/form";
 import { DateInput } from "@mantine/dates";
 import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useState } from "react";
+import { fetchApi } from "@/lib/api/fetchApi";
+import { getProducts } from "@/hooks/useTransaction";
 // import useCounterStore from "../useCounterStore";
 
 interface EditIncome {
@@ -49,8 +51,10 @@ interface EditExpenses {
 }
 
 export default function Output() {
-  // soter --------
-  // const { count, increment, decrement, reset } = useCounterStore();
+
+  
+
+
   const [editIncome, setEditIncome] = useState<EditIncome | null>(null);
 
   const [editExpenses, setEditExpenses] = useState<EditExpenses | null>(null);
