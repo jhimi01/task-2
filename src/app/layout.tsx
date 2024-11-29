@@ -1,5 +1,7 @@
 import "@mantine/core/styles.css";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+
 import { createTheme, MantineProvider } from "@mantine/core";
 
 import type { Metadata } from "next";
@@ -8,6 +10,7 @@ import "./globals.css";
 import Navbar from "./components/shared/Navbar";
 import ClientSideColorSchemeScript from "./ColorSchemaScript";
 import { AccountProvider } from "@/contexts/AccountContext";
+import { useState } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -26,7 +29,7 @@ export const metadata: Metadata = {
 };
 
 const theme = createTheme({
-  primaryColor: "customGreen", 
+  primaryColor: "customGreen",
   colors: {
     customGreen: [
       "#12947F",
@@ -48,22 +51,25 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const [queryClient] = useState(() => new QueryClient());
   return (
-    <AccountProvider>
-      <html lang="en">
-        <head>
-          <ClientSideColorSchemeScript />
-        </head>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-          style={{ backgroundColor: "#ffffff", color: "#000000" }}
-        >
-          <MantineProvider theme={theme}>
-            <Navbar />
-            {children}
-          </MantineProvider>
-        </body>
-      </html>
-    </AccountProvider>
+    <QueryClientProvider client={queryClient}>
+      <AccountProvider>
+        <html lang="en">
+          <head>
+            <ClientSideColorSchemeScript />
+          </head>
+          <body
+            className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+            style={{ backgroundColor: "#ffffff", color: "#000000" }}
+          >
+            <MantineProvider theme={theme}>
+              <Navbar />
+              {children}
+            </MantineProvider>
+          </body>
+        </html>
+      </AccountProvider>
+    </QueryClientProvider>
   );
 }
