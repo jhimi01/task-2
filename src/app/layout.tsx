@@ -1,11 +1,6 @@
-// 'use client'
 
 import "@mantine/core/styles.css";
-
-import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-
 import { createTheme, MantineProvider } from "@mantine/core";
-
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
@@ -13,7 +8,6 @@ import Navbar from "./components/shared/Navbar";
 import ClientSideColorSchemeScript from "./ColorSchemaScript";
 import { AccountProvider } from "@/contexts/AccountContext";
 import ReactQueryProvider from "./ReactQueryProvider";
-// import { useState } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",

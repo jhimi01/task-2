@@ -5,17 +5,17 @@ type FetchOptions = {
   body?: string; // Optional body for POST/PATCH
 };
 
-const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/";
 
 const TOKEN = process.env.JWT_SECRET; // Ensure this is correctly set
 
 export const fetchApi = async <T>(options: FetchOptions): Promise<T> => {
-    const contentType = "application/json";
-    const headers = {
-      "Content-Type": contentType,
-      Authorization: `Bearer ${TOKEN}`,
-      ...options.headers, // Custom headers can still be passed in
-    };
+  const contentType = "application/json";
+  const headers = {
+    "Content-Type": contentType,
+    Authorization: `Bearer ${TOKEN}`,
+    ...options.headers, // Custom headers can still be passed in
+  };
 
   const requestOptions: RequestInit = {
     method: options.method,
