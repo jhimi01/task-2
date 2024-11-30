@@ -3,7 +3,7 @@
 import { useEffect, useState } from "react";
 import FinanceTabs from "./components/FinanceManager/FinanceTabs";
 import Output from "./components/Output/Output";
-import { getProducts } from "@/hooks/useTransaction";
+import { transaction } from "@/hooks/useTransaction";
 
 export default function Home() {
 
@@ -13,7 +13,7 @@ export default function Home() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const data = await getProducts();
+        const data = await transaction();
         setProducts(data);
       } catch (error) {
         console.error("Error in fetching data", error);

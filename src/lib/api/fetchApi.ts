@@ -1,20 +1,20 @@
 type FetchOptions = {
-  url: string; // API endpoint
-  method?: "GET" | "POST" | "PATCH" | "DELETE"; // HTTP method
-  headers?: Record<string, string>; // Optional headers
-  body?: string; // Optional body for POST/PATCH
+  url: string; 
+  method?: "GET" | "POST" | "PATCH" | "DELETE"; 
+  headers?: Record<string, string>; 
+  body?: string; 
 };
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/";
 
-const TOKEN = process.env.JWT_SECRET; // Ensure this is correctly set
+const TOKEN = process.env.JWT_SECRET;
 
 export const fetchApi = async <T>(options: FetchOptions): Promise<T> => {
   const contentType = "application/json";
   const headers = {
     "Content-Type": contentType,
     Authorization: `Bearer ${TOKEN}`,
-    ...options.headers, // Custom headers can still be passed in
+    ...options.headers, 
   };
 
   const requestOptions: RequestInit = {
@@ -33,6 +33,6 @@ export const fetchApi = async <T>(options: FetchOptions): Promise<T> => {
     return data;
   } catch (error) {
     console.error("Error fetching API:", error);
-    throw error; // Rethrow the error for further handling in the calling function
+    throw error; 
   }
 };
