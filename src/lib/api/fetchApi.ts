@@ -24,7 +24,7 @@ export const fetchApi = async <T>(options: FetchOptions): Promise<T> => {
   };
 
   try {
-    const response = await fetch(`http://localhost:3000/api/transaction`, requestOptions);
+    const response = await fetch(`${BASE_URL}transaction`, requestOptions);
 
     if (!response.ok) {
       throw new Error(`HTTP error! status: ${response.status}`);

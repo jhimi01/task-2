@@ -1,3 +1,5 @@
+// 'use client'
+
 import "@mantine/core/styles.css";
 
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
@@ -10,7 +12,8 @@ import "./globals.css";
 import Navbar from "./components/shared/Navbar";
 import ClientSideColorSchemeScript from "./ColorSchemaScript";
 import { AccountProvider } from "@/contexts/AccountContext";
-import { useState } from "react";
+import ReactQueryProvider from "./ReactQueryProvider";
+// import { useState } from "react";
 
 const geistSans = localFont({
   src: "./fonts/GeistVF.woff",
@@ -51,9 +54,8 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const [queryClient] = useState(() => new QueryClient());
   return (
-    <QueryClientProvider client={queryClient}>
+    <ReactQueryProvider>
       <AccountProvider>
         <html lang="en">
           <head>
@@ -70,6 +72,6 @@ export default function RootLayout({
           </body>
         </html>
       </AccountProvider>
-    </QueryClientProvider>
+    </ReactQueryProvider>
   );
 }
