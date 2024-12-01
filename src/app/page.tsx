@@ -6,9 +6,6 @@ import Output from "./components/Output/Output";
 import { useTransaction } from "@/hooks/useTransaction";
 
 export default function Home() {
-  const { transactions, isLoading, error } = useTransaction();
-
-  console.log(transactions)
 
 
 

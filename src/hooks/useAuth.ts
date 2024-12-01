@@ -22,18 +22,20 @@ export default function useAuth() {
   const queryClient = useQueryClient();
 
   const login = useMutation<AuthResponse, Error, AuthPayload>(
-    async (payload) => {
+       // @ts-ignore
+    async (payload:any) => {
       const { data } = await axios.post(`${BASE_URL}login`, payload, {
         headers: { "Content-Type": "application/json" },
       });
       return data;
     },
     {
-      onSuccess: (data) => {
+      onSuccess: (data:any) => {
         localStorage.setItem("token", data.token);
       },
       onError: (error: string) => {
-        console.error("Login failed:", error.message); // Log or handle error
+        // @ts-ignore
+        console.error("Login failed:", error?.message as any); // Log or handle error
       },
     }
   );

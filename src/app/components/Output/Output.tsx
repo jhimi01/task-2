@@ -33,14 +33,13 @@ import { DateInput } from "@mantine/dates";
 import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { fetchApi } from "@/lib/api/fetchApi";
-import { getProducts } from "@/hooks/useTransaction";
-// import useCounterStore from "../useCounterStore";
+import { useTransaction } from "@/hooks/useTransaction";
 
 interface EditIncome {
   id: number;
-  incomecategory: string;
-  incomeamount: number;
-  incomedate: any | null;
+  category: string;
+  amount: number;
+  date: any | null;
 }
 
 interface EditExpenses {
@@ -51,21 +50,31 @@ interface EditExpenses {
 }
 
 export default function Output() {
-
-  
-
-
   const [editIncome, setEditIncome] = useState<EditIncome | null>(null);
 
   const [editExpenses, setEditExpenses] = useState<EditExpenses | null>(null);
 
   const { income, expenses, setExpenses, setIncome } = useAccount();
 
-  console.log(income[1]);
+  const { transactions } = useTransaction();
+  console.log(transactions);
 
-  const totalIncome = income.reduce((acc, curr) => acc + curr.incomeamount, 0);
-  const totalExpense = expenses.reduce((acc, curr) => acc + curr.amount, 0);
+  const incomeData = transactions?.filter(
+    (transaction) => transaction?.type === "income"
+  );
+  console.log(incomeData);
+  const expensesData = transactions?.filter(
+    (transaction) => transaction?.type === "expense"
+  );
+  console.log(incomeData);
+
+  const totalIncome = Array.isArray(incomeData)? incomeData.reduce((acc, curr) => acc + curr.amount, 0) 
+  : 0;
+  const totalExpense = Array.isArray(expensesData)? expensesData.reduce((acc, curr) => acc + curr.amount, 0) 
+  : 0;
   const balance = totalIncome - totalExpense;
+
+  console.log(totalIncome)
 
   const isSmallDevice = useMediaQuery("(max-width: 768px)");
 
@@ -131,9 +140,9 @@ export default function Output() {
 
   const formIncome = useForm({
     initialValues: {
-      incomecategory: "",
-      incomeamount: 0,
-      incomedate: "",
+      category: "",
+      amount: 0,
+      date: "",
     },
   });
 
@@ -150,9 +159,9 @@ export default function Output() {
   useEffect(() => {
     if (editIncome) {
       formIncome.setValues({
-        incomecategory: editIncome.incomecategory,
-        incomeamount: editIncome.incomeamount,
-        incomedate: new Date(editIncome.incomedate),
+        category: editIncome.category,
+        amount: editIncome.amount,
+        date: new Date(editIncome.date),
       });
     }
   }, [editIncome]);
@@ -171,6 +180,7 @@ export default function Output() {
 
   return (
     <Box>
+      {/* calculation of transaction */}
       <Flex className="border mb-5 rounded-md bg-slate-50 mt-5 md:mt-0 text-slate-800">
         <div
           className={`text-center flex-1 py-5 ${
@@ -272,24 +282,22 @@ export default function Output() {
           </Box>
           <Divider orientation="horizontal" />
           <Box className="p-5 text-slate-800">
-            {income?.length === 0 ? (
+            {incomeData?.length === 0 ? (
               <Center>
                 <Title order={4}>No Income</Title>
               </Center>
             ) : (
-              income?.map((incomeitem, index) => (
+              incomeData?.map((incomeitem, index) => (
                 <Box key={index}>
                   <Flex className="justify-between group items-center">
                     <Box>
                       <Text size="lg" fw={600}>
-                        {incomeitem?.incomecategory}
+                        {incomeitem?.category}
                       </Text>
-                      <Text size="sm">
-                        {formatDate(incomeitem?.incomedate)}
-                      </Text>
+                      <Text size="sm">{formatDate(incomeitem?.date)}</Text>
                     </Box>
                     <div className="flex gap-2">
-                      <Title order={5}>BDT {incomeitem?.incomeamount}</Title>
+                      <Title order={5}>BDT {incomeitem?.amount}</Title>
                       <IconPencil
                         onClick={() => handleEditIncome(incomeitem?.id)}
                         className="group-hover:block hidden cursor-pointer"
@@ -303,7 +311,7 @@ export default function Output() {
                     </div>
                   </Flex>
                   {/* Conditional divider */}
-                  {index !== income.length - 1 && (
+                  {index !== incomeData.length - 1 && (
                     <Divider orientation="horizontal" my={5} />
                   )}
                 </Box>
@@ -373,12 +381,12 @@ export default function Output() {
           </Box>
           <Divider orientation="horizontal" />
           <Box className="p-5 text-slate-800">
-            {expenses?.length === 0 ? (
+            {expensesData?.length === 0 ? (
               <Center>
                 <Title order={4}>No Expenses</Title>
               </Center>
             ) : (
-              expenses?.map((expense, index) => (
+              expensesData?.map((expense, index) => (
                 <Box key={index}>
                   <Flex className="justify-between group items-center">
                     <Box>
@@ -405,7 +413,7 @@ export default function Output() {
                     </div>
                   </Flex>
                   {/* Conditional divider */}
-                  {index !== expenses.length - 1 && (
+                  {index !== expensesData.length - 1 && (
                     <Divider orientation="horizontal" my={5} />
                   )}
                 </Box>
@@ -490,13 +498,10 @@ export default function Output() {
           <Select
             label="Category"
             data={["Salary", "Outsourcing", "Bond", "Dividend"]}
-            {...formIncome.getInputProps("incomecategory")}
+            {...formIncome.getInputProps("category")}
           />
-          <NumberInput
-            label="Amount"
-            {...formIncome.getInputProps("incomeamount")}
-          />
-          <DateInput label="Date" {...formIncome.getInputProps("incomedate")} />
+          <NumberInput label="Amount" {...formIncome.getInputProps("amount")} />
+          <DateInput label="Date" {...formIncome.getInputProps("date")} />
           <Button fullWidth type="submit">
             Save
           </Button>

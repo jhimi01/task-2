@@ -7,7 +7,7 @@ type FetchOptions = {
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000/";
 
-const TOKEN = process.env.JWT_SECRET;
+const TOKEN = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzMzMDYxODAyLCJleHAiOjE3MzMxNDgyMDJ9.ZKaIT4XDisEPLNTk9D2tewt1zaXIrinIUw52gxq_klw"
 
 export const fetchApi = async <T>(options: FetchOptions): Promise<T> => {
   const contentType = "application/json";
