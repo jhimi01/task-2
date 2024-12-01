@@ -3,33 +3,13 @@
 import { useEffect, useState } from "react";
 import FinanceTabs from "./components/FinanceManager/FinanceTabs";
 import Output from "./components/Output/Output";
-import { transaction } from "@/hooks/useTransaction";
+import { useTransaction } from "@/hooks/useTransaction";
 
 export default function Home() {
+  const { transactions, isLoading, error } = useTransaction();
 
-  const [products, setProducts] = useState([]);
-  const [loading, setLoading] = useState<boolean>(true);
+  console.log(transactions)
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const data = await transaction();
-        setProducts(data);
-      } catch (error) {
-        console.error("Error in fetching data", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  console.log("products", products);
-
-  if (loading) {
-    return <div>Loading...</div>;
-  }
 
 
 
