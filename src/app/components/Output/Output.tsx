@@ -68,13 +68,15 @@ export default function Output() {
   );
   console.log(incomeData);
 
-  const totalIncome = Array.isArray(incomeData)? incomeData.reduce((acc, curr) => acc + curr.amount, 0) 
-  : 0;
-  const totalExpense = Array.isArray(expensesData)? expensesData.reduce((acc, curr) => acc + curr.amount, 0) 
-  : 0;
+  const totalIncome = Array.isArray(incomeData)
+    ? incomeData.reduce((acc, curr) => acc + curr.amount, 0)
+    : 0;
+  const totalExpense = Array.isArray(expensesData)
+    ? expensesData.reduce((acc, curr) => acc + curr.amount, 0)
+    : 0;
   const balance = totalIncome - totalExpense;
 
-  console.log(totalIncome)
+  console.log(totalIncome);
 
   const isSmallDevice = useMediaQuery("(max-width: 768px)");
 
