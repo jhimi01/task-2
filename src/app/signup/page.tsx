@@ -129,6 +129,7 @@ export default function SignUp() {
           height={50}
           className="w-full h-full"
           width={50}
+          priority 
         ></Image>
       </Box>
     </Flex>

@@ -1,4 +1,6 @@
 "use client";
+import useAuth from "@/hooks/useAuth";
+import useCookie from "@/hooks/useCookie";
 import {
   Box,
   Button,
@@ -10,49 +12,81 @@ import {
   Title,
 } from "@mantine/core";
 import { useForm } from "@mantine/form";
+import axios from "axios";
 import Image from "next/image";
 import Link from "next/link";
-import React from "react";
+import React, { useEffect } from "react";
+import Swal from "sweetalert2";
 import { z } from "zod";
 
+// Validation schema for login form
 const loginSchema = z.object({
   email: z
     .string()
-    .email("Invalid email format") // Basic email format check (e.g., user@example.com)
+    .email("Invalid email format")
     .refine((email) => {
-      // Check if the domain part has at least one dot after '@' and no unusual characters
       const domain = email.split("@")[1];
       return domain && domain.split(".").length > 1;
     }, "(e.g., example@gmail.com)")
-    .refine((email) => {
-      // Check if the domain does not contain unusual characters
-      const domain = email.split("@")[1];
-      return /^[a-zA-Z0-9.-]+$/.test(domain);
-    }, "Email domain contains invalid characters"),
-
+    .refine(
+      (email) => /^[a-zA-Z0-9.-]+$/.test(email.split("@")[1]),
+      "Email domain contains invalid characters"
+    ),
   password: z
     .string()
-    .min(8, "min 8 characters")
-    .regex(/[A-Z]/, "at least one uppercase letter")
-    .regex(/[!@#$%^&*(),.?":{}|<>]/, "at least one special character"),
+    .min(8, "Password must be at least 8 characters long")
+    .regex(/[A-Z]/, "Password must contain at least one uppercase letter")
+    .regex(
+      /[!@#$%^&*(),.?":{}|<>]/,
+      "Password must contain at least one special character"
+    ),
 });
 
 export default function Login() {
+  // const { login } = useAuth(); // Access the login mutation
   const form = useForm({
-    mode: "uncontrolled",
     initialValues: {
       email: "",
+      password: "",
       termsOfService: false,
     },
-
-    validate: (value) => {
-      const result = loginSchema.safeParse(value);
+    validate: (values) => {
+      const result = loginSchema.safeParse(values);
       return result.success ? {} : result.error.flatten().fieldErrors;
     },
   });
 
+  const Token =
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzMzMTI0MjA0LCJleHAiOjE3MzMyMTA2MDR9.mttE3QcQfbcFG9iMyqQNNbGQLv6ohahjNszIcvIo91Q";
+
   const handleSubmit = (values: typeof form.values) => {
-    console.log(values);
+    const { email, password } = values; // Send only necessary fields
+
+    axios
+      .post(
+        "http://localhost:3000/auth/login",
+        { email, password },
+        { headers: { "Content-Type": "application/json" }, Authorization: `Bearer ${Token}`, },
+        
+      )
+      .then((res) => {
+        console.log("Post", res.data);
+        const token = res.data.token;
+        Swal.fire({
+          position: "top-end",
+          icon: "success",
+          title: "Successfully submitted",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+        form.reset();
+      })
+      .catch((error) => {
+        console.error(
+          "Post request failed:",
+          error?.response?.data?.message || error.message
+        );
+      });
   };
 
   return (
@@ -67,58 +101,70 @@ export default function Login() {
         <Title order={1} mb={6} className="text-slate-900">
           Login
         </Title>
-        {/* Form here */}
+
+        {/* Form */}
         <form className="space-y-3" onSubmit={form.onSubmit(handleSubmit)}>
           <TextInput
             withAsterisk
             label="Email"
             placeholder="your@email.com"
-            // key={form.key("email")}
             {...form.getInputProps("email")}
           />
 
           <PasswordInput
+            withAsterisk
             label="Password"
-            placeholder="password"
+            placeholder="Enter your password"
             {...form.getInputProps("password")}
           />
 
-          <Flex align={"center"} my={20} justify={"space-between"}>
+          <Flex align="center" my={20} justify="space-between">
             <Checkbox
               label="Remember me"
-              key={form.key("termsOfService")}
               {...form.getInputProps("termsOfService", { type: "checkbox" })}
             />
             <span className="text-sm underline text-primary">
-              <a href="#">Forget Password</a>
+              <a href="#">Forgot Password?</a>
             </span>
           </Flex>
 
-          <Group className="">
+          <Group>
             <div className="text-sm pt-3 text-slate-500">
               <p>
                 Are you new here?
                 <span className="underline ml-1 text-primary">
-                  <Link href="/signup">signup</Link>
+                  <Link href="/signup">Sign up</Link>
                 </span>
               </p>
             </div>
-            <Button fullWidth type="submit">
+            <Button
+              fullWidth
+              type="submit"
+              // loading={login.isLoading}
+            >
               Submit
             </Button>
           </Group>
+
+          {/* Error message */}
+          {/* {login.error && (
+            <p className="text-red-500 text-sm">
+              Login failed: {login.error.message}
+            </p>
+          )} */}
         </form>
       </Box>
 
-      {/* image section */}
+      {/* Image Section */}
       <Box className="flex-1">
         <Image
           src="./login2.svg"
-          alt="login"
+          alt="Login Illustration"
           height={50}
           className="w-full h-full"
           width={50}
-        ></Image>
+          priority 
+        />
       </Box>
     </Flex>
   );

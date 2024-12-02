@@ -32,7 +32,6 @@ import { useForm } from "@mantine/form";
 import { DateInput } from "@mantine/dates";
 import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useState } from "react";
-import { fetchApi } from "@/lib/api/fetchApi";
 import { useTransaction } from "@/hooks/useTransaction";
 
 interface EditIncome {
@@ -57,16 +56,13 @@ export default function Output() {
   const { income, expenses, setExpenses, setIncome } = useAccount();
 
   const { transactions } = useTransaction();
-  console.log(transactions);
 
   const incomeData = transactions?.filter(
     (transaction) => transaction?.type === "income"
   );
-  console.log(incomeData);
   const expensesData = transactions?.filter(
     (transaction) => transaction?.type === "expense"
   );
-  console.log(incomeData);
 
   const totalIncome = Array.isArray(incomeData)
     ? incomeData.reduce((acc, curr) => acc + curr.amount, 0)
@@ -75,8 +71,6 @@ export default function Output() {
     ? expensesData.reduce((acc, curr) => acc + curr.amount, 0)
     : 0;
   const balance = totalIncome - totalExpense;
-
-  console.log(totalIncome);
 
   const isSmallDevice = useMediaQuery("(max-width: 768px)");
 
