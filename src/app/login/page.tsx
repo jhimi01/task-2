@@ -1,6 +1,4 @@
 "use client";
-import useAuth from "@/hooks/useAuth";
-import useCookie from "@/hooks/useCookie";
 import {
   Box,
   Button,
@@ -57,36 +55,41 @@ export default function Login() {
   });
 
   const Token =
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzMzMTI0MjA0LCJleHAiOjE3MzMyMTA2MDR9.mttE3QcQfbcFG9iMyqQNNbGQLv6ohahjNszIcvIo91Q";
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzMzMTUzMDU3LCJleHAiOjE3MzMyMzk0NTd9.VNnEkyTQJoWaaCRxMMSOB3vUlPavEbjND-lD7_d1upA";
 
   const handleSubmit = (values: typeof form.values) => {
     const { email, password } = values; // Send only necessary fields
 
     axios
-      .post(
-        "http://localhost:3000/auth/login",
-        { email, password },
-        { headers: { "Content-Type": "application/json" }, Authorization: `Bearer ${Token}`, },
-        
-      )
-      .then((res) => {
-        console.log("Post", res.data);
-        const token = res.data.token;
-        Swal.fire({
-          position: "top-end",
-          icon: "success",
-          title: "Successfully submitted",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-        form.reset();
-      })
-      .catch((error) => {
-        console.error(
-          "Post request failed:",
-          error?.response?.data?.message || error.message
-        );
+    .post(
+      "http://localhost:3000/auth/login",
+      { email, password },
+      {
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${Token}`,
+        },
+      }
+    )
+    .then((res) => {
+      console.log("Post", res.data);
+      const token = res.data.token;
+      Swal.fire({
+        position: "top-end",
+        icon: "success",
+        title: "Successfully submitted",
+        showConfirmButton: false,
+        timer: 1500,
       });
+      form.reset();
+    })
+    .catch((error) => {
+      console.error(
+        "Post request failed:",
+        error?.response?.data?.message || error.message
+      );
+    });
+  
   };
 
   return (

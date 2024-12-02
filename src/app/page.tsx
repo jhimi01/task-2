@@ -1,14 +1,9 @@
-'use client'
 
 import { useEffect, useState } from "react";
 import FinanceTabs from "./components/FinanceManager/FinanceTabs";
 import Output from "./components/Output/Output";
-import { useTransaction } from "@/hooks/useTransaction";
 
 export default function Home() {
-
-  const BASE_URL = process.env.NEXT_PUBLIC_API_URL
-  console.log(BASE_URL);
 
 
 
