@@ -1,5 +1,12 @@
 "use client";
-import { Box, Button, NumberInput, Select, rem } from "@mantine/core";
+import {
+  Box,
+  Button,
+  NumberInput,
+  Select,
+  TextInput,
+  rem,
+} from "@mantine/core";
 import { DateInput } from "@mantine/dates";
 import { IoIosArrowDown } from "react-icons/io";
 import { IconCalendar } from "@tabler/icons-react";
@@ -10,6 +17,7 @@ interface FormProps {
   title: string;
   categoryData: string[];
   type: string; // Type is passed as a prop
+
   onSubmit: (values: any) => void;
 }
 
@@ -22,7 +30,7 @@ const schema = z.object({
 
 const CustomForm = ({ title, categoryData, type, onSubmit }: FormProps) => {
   const form = useForm({
-    initialValues: { category: "", amount: 0, date: new Date(), type: type }, // Pass the type as initial value
+    initialValues: { category: "", amount: 0, date: "", type: type }, // Pass the type as initial value
     validate: (values) => {
       const result = schema.safeParse(values);
       return result.success ? {} : result.error.flatten().fieldErrors;
@@ -51,6 +59,11 @@ const CustomForm = ({ title, categoryData, type, onSubmit }: FormProps) => {
         label="Amount"
         placeholder="Enter amount"
         {...form.getInputProps("amount")}
+      />
+      <TextInput
+        label="Description"
+        placeholder="Enter description"
+        {...form.getInputProps("description")}
       />
       <DateInput
         label="Date"

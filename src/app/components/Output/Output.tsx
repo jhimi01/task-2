@@ -14,6 +14,7 @@ import {
   rem,
   Select,
   Text,
+  TextInput,
   Title,
 } from "@mantine/core";
 import { useDisclosure, useMediaQuery } from "@mantine/hooks";
@@ -39,6 +40,7 @@ interface EditIncome {
   id: number;
   category: string;
   amount: number;
+  description: string;
   date: any | null;
 }
 
@@ -46,17 +48,24 @@ interface EditExpenses {
   id: number;
   category: string;
   amount: number;
+  description: string;
   date: any | null;
 }
+
+const Token =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzMzMjMwNjgwLCJleHAiOjE3MzMzMTcwODB9.kNP5-KYN7okp_ZB97Bfn7I5hhCoeujpGcLth5MgnFpg";
+
+// const Token = process.env.TOKEN;
 
 export default function Output() {
   const [editIncome, setEditIncome] = useState<EditIncome | null>(null);
 
   const [editExpenses, setEditExpenses] = useState<EditExpenses | null>(null);
 
-  const { income, expenses, setExpenses, setIncome } = useAccount();
+  console.log("editExpenses", editExpenses);
 
   const { transactions } = useTransaction();
+  console.log(transactions);
 
   const incomeData = transactions?.filter(
     (transaction) => transaction?.type === "income"
@@ -84,6 +93,8 @@ export default function Output() {
   };
   // delete expenses ------
   const handleTrashexpenses = (id: number) => {
+    const url = `http://localhost:3000/transaction/${id}`;
+
     Swal.fire({
       title: "Are you sure?",
       text: "You won't be able to revert this!",
@@ -92,50 +103,64 @@ export default function Output() {
       confirmButtonColor: "#3085d6",
       cancelButtonColor: "#d33",
       confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const result = expenses.filter((exp) => exp.id !== id);
-        localStorage.setItem("expenses", JSON.stringify(result));
-        setExpenses(result);
-        Swal.fire("Deleted!", "Your file has been deleted.", "success");
+        try {
+          const response = await axios.delete(url, {
+            headers: {
+              Authorization: `Bearer ${Token}`,
+            },
+          });
+          console.log("Delete successful:", response.data);
+          Swal.fire(
+            "Deleted!",
+            "Your transaction has been deleted.",
+            "success"
+          );
+          // Handle successful deletion (e.g., update UI or state)
+        } catch (error) {
+          console.error("Error deleting transaction:", error);
+          Swal.fire("Error!", "Failed to delete the transaction.", "error");
+          // Handle error
+        }
       }
     });
   };
 
-  // delete income ------
-  const handleTrashIncome = async(id: number) => {
-
-    console.log(id)
+  // delete income-------
+  const handleTrashIncome = async (id: number) => {
     const url = `http://localhost:3000/transaction/${id}`;
 
-    try {
-      const response = await axios.delete(url);
-      console.log("Delete successful:", response.data);
-      // Handle successful deletion
-    } catch (error) {
-      console.error("Error deleting transaction:", error);
-      // Handle error
-    }
-
-    // Swal.fire({
-    //   title: "Are you sure?",
-    //   text: "You won't be able to revert this!",
-    //   icon: "warning",
-    //   showCancelButton: true,
-    //   confirmButtonColor: "#3085d6",
-    //   cancelButtonColor: "#d33",
-    //   confirmButtonText: "Yes, delete it!",
-    // }).then((result) => {
-    //   if (result.isConfirmed) {
-    //     const result = income.filter((inc) => inc.id !== id);
-    //     localStorage.setItem("income", JSON.stringify(result));
-    //     setIncome(result);
-    //     Swal.fire("Deleted!", "Your file has been deleted.", "success");
-    //   }
-    // });
-
-
-
+    Swal.fire({
+      title: "Are you sure?",
+      text: "You won't be able to revert this!",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#3085d6",
+      cancelButtonColor: "#d33",
+      confirmButtonText: "Yes, delete it!",
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          const response = await axios.delete(url, {
+            headers: {
+              Authorization: `Bearer ${Token}`,
+            },
+          });
+          console.log("Delete successful:", response.data);
+          Swal.fire(
+            "Deleted!",
+            "Your transaction has been deleted.",
+            "success"
+          );
+          // Handle successful deletion (e.g., update UI or state)
+        } catch (error) {
+          console.error("Error deleting transaction:", error);
+          Swal.fire("Error!", "Failed to delete the transaction.", "error");
+          // Handle error
+        }
+      }
+    });
   };
 
   const [openedExpense, { open: openExpense, close: closeExpense }] =
@@ -164,6 +189,7 @@ export default function Output() {
       formExpense.setValues({
         category: editExpenses.category,
         amount: editExpenses.amount,
+        description: editExpenses.description,
         date: new Date(editExpenses.date),
       });
     }
@@ -180,13 +206,14 @@ export default function Output() {
   }, [editIncome]);
 
   const handleEditExpense = (id: number) => {
-    const findData = expenses.find((expense) => expense.id === id);
+    const findData = expensesData.find((expense) => expense.id === id);
     setEditExpenses(findData);
     openExpense();
+    console.log(findData);
   };
 
   const handleEditIncome = (id: number) => {
-    const findData = income.find((incomeItem) => incomeItem.id === id);
+    const findData = incomeData.find((incomeItem) => incomeItem.id === id);
     setEditIncome(findData);
     openIncome();
   };
@@ -439,20 +466,55 @@ export default function Output() {
       {/* expense Edit Modal ------- */}
       <Modal opened={openedExpense} onClose={closeExpense}>
         <Title order={2} c={"#333"}>
-          Edit information
+          Edit Information
         </Title>
         <Box
           component="form"
-          onSubmit={formExpense.onSubmit((values) => {
-            // Handle the form submission with updated values
-            const updatedExpenses = expenses.map((expense) =>
-              expense?.id === editExpenses?.id
-                ? { ...expense, ...values }
-                : expense
-            );
-            setExpenses(updatedExpenses);
-            localStorage.setItem("expenses", JSON.stringify(updatedExpenses));
-            closeExpense();
+          onSubmit={formExpense.onSubmit(async (values) => {
+            console.log("Form values:", values);
+
+            const data = { ...values, id: editExpenses?.id };
+            console.log("Merged data:", data);
+
+            const url = `http://localhost:3000/transaction/${editExpenses?.id}`;
+
+            Swal.fire({
+              title: "Are you sure?",
+              text: "You won't be able to revert this!",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, submit it!",
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                try {
+                  const response = await axios.patch(url, data, {
+                    headers: {
+                      "Content-Type": "application/json",
+                      Authorization: `Bearer ${Token}`,
+                    },
+                  });
+                  console.log("Submit successful:", response.data);
+                  Swal.fire(
+                    "Submitted!",
+                    "Your transaction has been updated.",
+                    "success"
+                  );
+                  closeExpense(); // Close the modal after submission
+                } catch (error) {
+                  console.error(
+                    "Error submitting transaction:",
+                    error.response?.data || error
+                  );
+                  Swal.fire(
+                    "Error!",
+                    "Failed to update the transaction.",
+                    "error"
+                  );
+                }
+              }
+            });
           })}
           className="space-y-4 mt-3"
         >
@@ -478,6 +540,11 @@ export default function Output() {
             label="Amount"
             placeholder="12345"
             {...formExpense.getInputProps("amount")}
+          />
+          <TextInput
+            label="Description"
+            placeholder="Enter description"
+            {...formExpense.getInputProps("description")}
           />
           <DateInput
             label="Date"
