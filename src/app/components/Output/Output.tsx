@@ -55,11 +55,8 @@ interface EditExpenses {
 const Token =
   "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzMzMjMwNjgwLCJleHAiOjE3MzMzMTcwODB9.kNP5-KYN7okp_ZB97Bfn7I5hhCoeujpGcLth5MgnFpg";
 
-// const Token = process.env.TOKEN;
-
 export default function Output() {
   const [editIncome, setEditIncome] = useState<EditIncome | null>(null);
-
   const [editExpenses, setEditExpenses] = useState<EditExpenses | null>(null);
 
   console.log("editExpenses", editExpenses);
@@ -200,6 +197,7 @@ export default function Output() {
       formIncome.setValues({
         category: editIncome.category,
         amount: editIncome.amount,
+        description: editIncome.description,
         date: new Date(editIncome.date),
       });
     }
@@ -566,12 +564,8 @@ export default function Output() {
         <Box
           component="form"
           onSubmit={formIncome.onSubmit((values) => {
-            const updatedIncome = income.map((item) =>
-              item.id === editIncome?.id ? { ...item, ...values } : item
-            );
-            setIncome(updatedIncome);
-            localStorage.setItem("income", JSON.stringify(updatedIncome));
-            closeIncome();
+            // setEditIncome(values)
+            console.log(values);
           })}
           className="space-y-4 mt-3"
         >
@@ -581,6 +575,11 @@ export default function Output() {
             {...formIncome.getInputProps("category")}
           />
           <NumberInput label="Amount" {...formIncome.getInputProps("amount")} />
+          <TextInput
+            label="Description"
+            placeholder="Enter description"
+            {...formExpense.getInputProps("description")}
+          />
           <DateInput label="Date" {...formIncome.getInputProps("date")} />
           <Button fullWidth type="submit">
             Save
