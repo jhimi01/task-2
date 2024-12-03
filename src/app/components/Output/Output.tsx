@@ -33,6 +33,7 @@ import { DateInput } from "@mantine/dates";
 import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { useTransaction } from "@/hooks/useTransaction";
+import axios from "axios";
 
 interface EditIncome {
   id: number;
@@ -102,23 +103,39 @@ export default function Output() {
   };
 
   // delete income ------
-  const handleTrashIncome = (id: number) => {
-    Swal.fire({
-      title: "Are you sure?",
-      text: "You won't be able to revert this!",
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonColor: "#3085d6",
-      cancelButtonColor: "#d33",
-      confirmButtonText: "Yes, delete it!",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const result = income.filter((inc) => inc.id !== id);
-        localStorage.setItem("income", JSON.stringify(result));
-        setIncome(result);
-        Swal.fire("Deleted!", "Your file has been deleted.", "success");
-      }
-    });
+  const handleTrashIncome = async(id: number) => {
+
+    console.log(id)
+    const url = `http://localhost:3000/transaction/${id}`;
+
+    try {
+      const response = await axios.delete(url);
+      console.log("Delete successful:", response.data);
+      // Handle successful deletion
+    } catch (error) {
+      console.error("Error deleting transaction:", error);
+      // Handle error
+    }
+
+    // Swal.fire({
+    //   title: "Are you sure?",
+    //   text: "You won't be able to revert this!",
+    //   icon: "warning",
+    //   showCancelButton: true,
+    //   confirmButtonColor: "#3085d6",
+    //   cancelButtonColor: "#d33",
+    //   confirmButtonText: "Yes, delete it!",
+    // }).then((result) => {
+    //   if (result.isConfirmed) {
+    //     const result = income.filter((inc) => inc.id !== id);
+    //     localStorage.setItem("income", JSON.stringify(result));
+    //     setIncome(result);
+    //     Swal.fire("Deleted!", "Your file has been deleted.", "success");
+    //   }
+    // });
+
+
+
   };
 
   const [openedExpense, { open: openExpense, close: closeExpense }] =

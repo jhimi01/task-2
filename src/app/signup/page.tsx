@@ -53,7 +53,7 @@ export default function SignUp() {
       password: "",
       termsOfService: false, // Add this
     },
-    
+
     validate: (value) => {
       const result = signUpSchema.safeParse(value);
       return result.success ? {} : result.error.flatten().fieldErrors;
@@ -62,24 +62,29 @@ export default function SignUp() {
 
   const generateRandomId = () => Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit random ID
 
-
-
   // Inside your SignUp component:
   const handleSubmit = async (values: typeof form.values) => {
     const { email, password, username } = values;
     const payload = { email, password, username };
     console.log("Form values:", values);
-    console.log("Validation errors:", form.errors);
-    
+
     try {
-      const response = await axios.post("http://localhost:3000/auth/signup", payload, {
-        headers: {
-          "Content-Type": "application/json",
-        },
-      });
-      
+      const response = await axios.post(
+        "http://localhost:3000/auth/signup",
+        payload,
+        {
+          headers: {
+            "Content-Type": "application/json",
+          },
+        }
+      );
+
       if (response.status === 201) {
-        showNotification({ title: "Success", message: "Signup successful!", color: "green" });
+        showNotification({
+          title: "Success",
+          message: "Signup successful!",
+          color: "green",
+        });
         console.log("Signup successful:", response.data);
       } else {
         showNotification({
@@ -93,10 +98,14 @@ export default function SignUp() {
       if (axios.isAxiosError(error)) {
         showNotification({
           title: "Error",
-          message: error.response?.data?.message || "An error occurred during signup.",
+          message:
+            error.response?.data?.message || "An error occurred during signup.",
           color: "red",
         });
-        console.error("An error occurred during signup:", error.response?.data?.message || error.message);
+        console.error(
+          "An error occurred during signup:",
+          error.response?.data?.message || error.message
+        );
       } else {
         showNotification({
           title: "Error",
@@ -107,8 +116,6 @@ export default function SignUp() {
       }
     }
   };
-  
-  
 
   return (
     <Flex
