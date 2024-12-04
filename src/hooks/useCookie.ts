@@ -17,7 +17,7 @@ const useCookie = () => {
     (
       name: string,
       value: string,
-      options?: { days?: number; secure?: boolean },
+      options?: { days?: number; secure?: boolean }
     ) => {
       let cookieString = `${name}=${encodeURIComponent(value)}`;
       if (options?.days) {

@@ -42,11 +42,11 @@ export default function Login() {
       const token = response.data.accessToken;
       if (token) {
         // Save the token in cookies
-        setCookie("accessToken", token, { expires: 7 });
+        setCookie("accessToken", token, { days: 7 });
         toast.success("Login successful! Redirecting...", {
           position: "top-right",
         });
-        router.push("/")
+        router.push("/");
       } else {
         toast.error("Login failed. No token received.", {
           position: "top-right",
