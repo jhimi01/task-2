@@ -11,14 +11,12 @@ import {
   TextInput,
   Title,
 } from "@mantine/core";
-import { IconX, IconCheck } from "@tabler/icons-react";
-// import { useForm } from "@mantine/form";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 import Image from "next/image";
 import Link from "next/link";
 import { z } from "zod";
-import { showNotification } from "@mantine/notifications";
 import axios from "axios";
-import Swal from "sweetalert2";
 import { useForm } from "@mantine/form";
 import { useRouter } from "next/navigation";
 
@@ -70,8 +68,7 @@ export default function SignUp() {
     },
   });
 
-  // Inside your SignUp component:
-  const handleSubmit = (values: typeof form.values) => {
+  const handleSubmit = (values) => {
     console.log("Form values:", values.email);
     axios
       .post(
@@ -89,9 +86,9 @@ export default function SignUp() {
       )
       .then((res) => {
         console.log("Post", res.data);
-        <Notification icon={IconCheck} color="teal" title="All good!" mt="md">
-          Everything is fine
-        </Notification>;
+        toast.success("Sign-up successful! Redirecting to login...", {
+          position: "top-right",
+        });
         form.reset();
         router.push("/login");
       })
@@ -100,85 +97,88 @@ export default function SignUp() {
           "Post request failed:",
           error?.response?.data?.message || error.message
         );
-        <Notification icon={IconX} color="red" title="Bummer!">
-          Something went wrong
-        </Notification>;
+        toast.error(error?.response?.data?.message || "Something went wrong!", {
+          position: "top-right",
+        });
       });
   };
 
   // A@asdfghjkl
 
   return (
-    <Flex
-      align="center"
-      gap={50}
-      className="wrapper lg:flex-row flex-col"
-      justify="space-between"
-    >
-      <Box className="flex-1 mx-auto w-full px-2 lg:px-20">
-        <Title order={1} mb={6} className="text-slate-900">
-          Sign Up
-        </Title>
-        <form className="space-y-3" onSubmit={form.onSubmit(handleSubmit)}>
-          <TextInput
-            label="Full Name"
-            placeholder="Type your name"
-            {...form.getInputProps("fullName")}
-          />
-          <TextInput
-            label="Username"
-            placeholder="Type your username"
-            {...form.getInputProps("username")}
-          />
-          <TextInput
-            withAsterisk
-            label="Email"
-            placeholder="your@email.com"
-            {...form.getInputProps("email")}
-          />
-          <PasswordInput
-            label="Password"
-            placeholder="password"
-            {...form.getInputProps("password")}
-          />
-
-          <Flex align={"center"} my={20} justify={"space-between"}>
-            <Checkbox
-              label="Remember me"
-              key={form.key("termsOfService")}
-              {...form.getInputProps("termsOfService", { type: "checkbox" })}
+    <>
+      <ToastContainer />
+      <Flex
+        align="center"
+        gap={50}
+        className="wrapper lg:flex-row flex-col"
+        justify="space-between"
+      >
+        <Box className="flex-1 mx-auto w-full px-2 lg:px-20">
+          <Title order={1} mb={6} className="text-slate-900">
+            Sign Up
+          </Title>
+          <form className="space-y-3" onSubmit={form.onSubmit(handleSubmit)}>
+            <TextInput
+              label="Full Name"
+              placeholder="Type your name"
+              {...form.getInputProps("fullName")}
             />
-            <span className="text-sm underline text-primary">
-              <a href="#">Forget Password</a>
-            </span>
-          </Flex>
+            <TextInput
+              label="Username"
+              placeholder="Type your username"
+              {...form.getInputProps("username")}
+            />
+            <TextInput
+              withAsterisk
+              label="Email"
+              placeholder="your@email.com"
+              {...form.getInputProps("email")}
+            />
+            <PasswordInput
+              label="Password"
+              placeholder="password"
+              {...form.getInputProps("password")}
+            />
 
-          <Group>
-            <div className="text-sm pt-3 text-slate-500">
-              <p>
-                Do you already have an account?
-                <span className="underline ml-1 text-primary">
-                  <Link href="/login">Login</Link>
-                </span>
-              </p>
-            </div>
-            <Button fullWidth type="submit">
-              Submit
-            </Button>
-          </Group>
-        </form>
-      </Box>
+            <Flex align={"center"} my={20} justify={"space-between"}>
+              <Checkbox
+                label="Remember me"
+                key={form.key("termsOfService")}
+                {...form.getInputProps("termsOfService", { type: "checkbox" })}
+              />
+              <span className="text-sm underline text-primary">
+                <a href="#">Forget Password</a>
+              </span>
+            </Flex>
 
-      <Box className="flex-1">
-        <Image
-          src="./login2.svg"
-          alt="login"
-          height={50}
-          className="w-full h-full"
-          width={50}
-          priority
-        />
-      </Box>
-    </Flex>
+            <Group>
+              <div className="text-sm pt-3 text-slate-500">
+                <p>
+                  Do you already have an account?
+                  <span className="underline ml-1 text-primary">
+                    <Link href="/login">Login</Link>
+                  </span>
+                </p>
+              </div>
+              <Button fullWidth type="submit">
+                Submit
+              </Button>
+            </Group>
+          </form>
+        </Box>
+
+        <Box className="flex-1">
+          <Image
+            src="./login2.svg"
+            alt="login"
+            height={50}
+            className="w-full h-full"
+            width={50}
+            priority
+          />
+        </Box>
+      </Flex>
+    </>
   );
 }

@@ -14,7 +14,11 @@ const parseCookies = (): Record<string, string> => {
 const useCookie = () => {
   // Function to set a cookie
   const setCookie = useCallback(
-    (name: string, value: string, options?: { days?: number; secure?: boolean }) => {
+    (
+      name: string,
+      value: string,
+      options?: { days?: number; secure?: boolean },
+    ) => {
       let cookieString = `${name}=${encodeURIComponent(value)}`;
       if (options?.days) {
         const date = new Date();

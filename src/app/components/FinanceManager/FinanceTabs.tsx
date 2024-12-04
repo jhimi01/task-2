@@ -5,13 +5,15 @@ import classes from "./FinanceTabs.module.css";
 import Swal from "sweetalert2";
 import axios from "axios";
 import useCookie from "@/hooks/useCookie";
+import { toast, ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function FinanceTabs() {
-  const { getCookie } = useCookie(); // Access the `getCookie` function
-  const token = getCookie("accessToken"); // Retrieve the token from the cookie
+  const { getCookie } = useCookie();
+  const token = getCookie("accessToken");
 
   const handleSubmit = async (values: any) => {
-    console.log("Form submitted:", values); // Log values upon submission
+    console.log("Form submitted:", values);
     const url = `http://localhost:3000/transaction`;
 
     Swal.fire({
@@ -36,69 +38,74 @@ export default function FinanceTabs() {
             }
           );
           console.log("Submit successful:", response.data);
-          Swal.fire("Submitted!", "Your transaction has been recorded.", "success");
+          toast.success("successful!", {
+            position: "top-right",
+          });
           // Handle successful submission (e.g., update UI or state)
         } catch (error) {
           console.error("Error submitting transaction:", error);
-          Swal.fire("Error!", "Failed to submit the transaction.", "error");
-          // Handle error
+          toast.error(" failed", {
+            position: "top-right",
+          });
         }
       }
     });
   };
 
-
   return (
-    <Box className="border rounded bg-slate-50 py-5 px-5">
-      <Center>
-        <Title order={2} className="text-slate-800" mb={30}>
-          Expense Tracker
-        </Title>
-      </Center>
+    <>
+      <ToastContainer />
+      <Box className="border rounded bg-slate-50 py-5 px-5">
+        <Center>
+          <Title order={2} className="text-slate-800" mb={30}>
+            Expense Tracker
+          </Title>
+        </Center>
 
-      <Tabs variant="unstyled" defaultValue="expense" classNames={classes}>
-        <Tabs.List grow>
-          <Tabs.Tab
-            value="expense"
-            className="rounded-s-md text-[15px] font-medium"
-          >
-            Expense
-          </Tabs.Tab>
-          <Tabs.Tab
-            value="income"
-            className="rounded-e-md text-[15px] font-medium"
-          >
-            Income
-          </Tabs.Tab>
-        </Tabs.List>
+        <Tabs variant="unstyled" defaultValue="expense" classNames={classes}>
+          <Tabs.List grow>
+            <Tabs.Tab
+              value="expense"
+              className="rounded-s-md text-[15px] font-medium"
+            >
+              Expense
+            </Tabs.Tab>
+            <Tabs.Tab
+              value="income"
+              className="rounded-e-md text-[15px] font-medium"
+            >
+              Income
+            </Tabs.Tab>
+          </Tabs.List>
 
-        <Tabs.Panel value="expense" pt="xs">
-          <CustomForm
-            title="Expense"
-            categoryData={[
-              "Education",
-              "Food",
-              "Health",
-              "Bill",
-              "Insurance",
-              "Tax",
-              "Transport",
-              "Telephone",
-            ]}
-            type="expense" // Passing type to the form
-            onSubmit={handleSubmit}
-          />
-        </Tabs.Panel>
+          <Tabs.Panel value="expense" pt="xs">
+            <CustomForm
+              title="Expense"
+              categoryData={[
+                "Education",
+                "Food",
+                "Health",
+                "Bill",
+                "Insurance",
+                "Tax",
+                "Transport",
+                "Telephone",
+              ]}
+              type="expense" // Passing type to the form
+              onSubmit={handleSubmit}
+            />
+          </Tabs.Panel>
 
-        <Tabs.Panel value="income" pt="xs">
-          <CustomForm
-            title="Income"
-            type="income" // Passing type to the form
-            categoryData={["Salary", "Outsourcing", "Bond", "Dividend"]}
-            onSubmit={handleSubmit}
-          />
-        </Tabs.Panel>
-      </Tabs>
-    </Box>
+          <Tabs.Panel value="income" pt="xs">
+            <CustomForm
+              title="Income"
+              type="income" // Passing type to the form
+              categoryData={["Salary", "Outsourcing", "Bond", "Dividend"]}
+              onSubmit={handleSubmit}
+            />
+          </Tabs.Panel>
+        </Tabs>
+      </Box>
+    </>
   );
 }
