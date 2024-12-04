@@ -463,7 +463,7 @@ export default function Output() {
       {/* expense Edit Modal ------- */}
       <Modal opened={openedExpense} onClose={closeExpense}>
         <Title order={2} c={"#333"}>
-          Edit Information
+          Edit Expense
         </Title>
         <Box
           component="form"
@@ -486,17 +486,21 @@ export default function Output() {
             }).then(async (result) => {
               if (result.isConfirmed) {
                 try {
-                  const response = await axios.patch(url,  {
-                    category: values.category,
-                    amount: values.amount,
-                    description: values.description,
-                    date: values.date,
-                  }, {
-                    headers: {
-                      "Content-Type": "application/json",
-                      Authorization: `Bearer ${token}`,
+                  const response = await axios.patch(
+                    url,
+                    {
+                      category: values.category,
+                      amount: values.amount,
+                      description: values.description,
+                      date: values.date,
                     },
-                  });
+                    {
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                      },
+                    }
+                  );
                   // console.log("Submit successful:", response.data);
                   Swal.fire(
                     "Submitted!",
