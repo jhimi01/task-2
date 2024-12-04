@@ -68,7 +68,7 @@ export default function SignUp() {
     },
   });
 
-  const handleSubmit = (values:any) => {
+  const handleSubmit = (values: any) => {
     console.log("Form values:", values.email);
     axios
       .post(

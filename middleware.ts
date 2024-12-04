@@ -7,8 +7,10 @@ export function middleware(req: NextRequest) {
   const token = getCookie("accessToken");
 
   // If no token is found, redirect to login
-  if (!token || token == undefined) {
-    return NextResponse.redirect(new URL("/login", req.url));
+  if (token) {
+    return NextResponse.next();
+  }else{
+    return NextResponse.redirect(new URL("/login"));
   }
 
   // If token exists, allow access to the page

@@ -43,6 +43,7 @@ export default function Login() {
       if (token) {
         // Save the token in cookies
         setCookie("accessToken", token, { days: 7 });
+        // res.cookie("accessToken", token)
         toast.success("Login successful! Redirecting...", {
           position: "top-right",
         });
