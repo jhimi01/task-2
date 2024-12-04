@@ -4,10 +4,12 @@ import CustomForm from "./CustomForm";
 import classes from "./FinanceTabs.module.css";
 import Swal from "sweetalert2";
 import axios from "axios";
-
-const Token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzMzMjMwNjgwLCJleHAiOjE3MzMzMTcwODB9.kNP5-KYN7okp_ZB97Bfn7I5hhCoeujpGcLth5MgnFpg" // Ensure the token is accessible client-side
+import useCookie from "@/hooks/useCookie";
 
 export default function FinanceTabs() {
+  const { getCookie } = useCookie(); // Access the `getCookie` function
+  const token = getCookie("accessToken"); // Retrieve the token from the cookie
+
   const handleSubmit = async (values: any) => {
     console.log("Form submitted:", values); // Log values upon submission
     const url = `http://localhost:3000/transaction`;
@@ -29,7 +31,7 @@ export default function FinanceTabs() {
             {
               headers: {
                 "Content-Type": "application/json",
-                Authorization: `Bearer ${Token}`,
+                Authorization: `Bearer ${token}`, // Use the token from the cookie
               },
             }
           );
@@ -44,6 +46,7 @@ export default function FinanceTabs() {
       }
     });
   };
+
 
   return (
     <Box className="border rounded bg-slate-50 py-5 px-5">

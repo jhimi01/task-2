@@ -1,41 +1,47 @@
 "use client";
-import { useState } from "react";
 
-const useCookie = (cookieName: string) => {
-  // Function to get the cookie value by name
-  const getCookie = (): string | null => {
-    const value = `; ${document.cookie}`;
-    const parts = value.split(`; ${cookieName}=`);
-    if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
-    return null;
-  };
+import { useCallback } from "react";
 
+// Helper function to parse cookies
+const parseCookies = (): Record<string, string> => {
+  return document.cookie.split("; ").reduce((acc, current) => {
+    const [key, value] = current.split("=");
+    acc[key] = decodeURIComponent(value || "");
+    return acc;
+  }, {} as Record<string, string>);
+};
+
+const useCookie = () => {
   // Function to set a cookie
-  const setCookie = (value: string, days: number = 7) => {
-    const d = new Date();
-    d.setTime(d.getTime() + days * 24 * 60 * 60 * 1000); // Set expiration time
-    const expires = `expires=${d.toUTCString()}`;
-    document.cookie = `${cookieName}=${value}; ${expires}; path=/`; // Set the cookie
-  };
+  const setCookie = useCallback(
+    (name: string, value: string, options?: { days?: number; secure?: boolean }) => {
+      let cookieString = `${name}=${encodeURIComponent(value)}`;
+      if (options?.days) {
+        const date = new Date();
+        date.setDate(date.getDate() + options.days);
+        cookieString += `; expires=${date.toUTCString()}`;
+      }
+      cookieString += "; path=/";
+      if (options?.secure) {
+        cookieString += "; secure";
+      }
+      document.cookie = cookieString;
+    },
+    []
+  );
+
+  // Function to get a cookie by name
+  const getCookie = useCallback((name: string): string | undefined => {
+    const cookies = parseCookies();
+    return cookies[name];
+  }, []);
 
   // Function to remove a cookie
-  const removeCookie = () => {
-    document.cookie = `${cookieName}=; Max-Age=-99999999; path=/`; // Remove the cookie
-  };
+  const removeCookie = useCallback((name: string) => {
+    document.cookie = `${name}=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/`;
+  }, []);
 
-  const [cookieValue, setCookieState] = useState<string | null>(() => getCookie());
-
-  return {
-    cookieValue, // Current cookie value
-    setCookie: (value: string) => {
-      setCookie(value);
-      setCookieState(value); // Update state
-    },
-    removeCookie: () => {
-      removeCookie();
-      setCookieState(null); // Clear state when removed
-    },
-  };
+  return { setCookie, getCookie, removeCookie };
 };
 
 export default useCookie;

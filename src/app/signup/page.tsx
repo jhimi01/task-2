@@ -3,21 +3,27 @@ import {
   Box,
   Button,
   Checkbox,
+  CheckIcon,
   Flex,
   Group,
+  Notification,
   PasswordInput,
   TextInput,
   Title,
 } from "@mantine/core";
-import { useForm } from "@mantine/form";
+import { IconX, IconCheck } from "@tabler/icons-react";
+// import { useForm } from "@mantine/form";
 import Image from "next/image";
 import Link from "next/link";
 import { z } from "zod";
 import { showNotification } from "@mantine/notifications";
 import axios from "axios";
+import Swal from "sweetalert2";
+import { useForm } from "@mantine/form";
+import { useRouter } from "next/navigation";
 
 const signUpSchema = z.object({
-  fullname: z.string().min(2, "Full name must be at least 2 characters long"),
+  fullName: z.string().min(2, "Full name must be at least 2 characters long"),
   username: z
     .string()
     .min(4, "Username must be at least 4 characters long")
@@ -44,78 +50,63 @@ const signUpSchema = z.object({
 });
 
 export default function SignUp() {
+  const router = useRouter();
+
   const form = useForm({
     mode: "uncontrolled",
     initialValues: {
-      fullname: "",
+      fullName: "",
       username: "",
       email: "",
       password: "",
-      termsOfService: false, // Add this
+      role: "user",
+      createdAt: new Date().toISOString(), // default createdAt to current date
+      updatedAt: new Date().toISOString(), // default updatedAt to current date
+      // This could be set to a UUID on the backend or handled by the database
     },
-
     validate: (value) => {
       const result = signUpSchema.safeParse(value);
       return result.success ? {} : result.error.flatten().fieldErrors;
     },
   });
 
-  const generateRandomId = () => Math.floor(100000 + Math.random() * 900000); // Generates a 6-digit random ID
-
   // Inside your SignUp component:
-  const handleSubmit = async (values: typeof form.values) => {
-    const { email, password, username } = values;
-    const payload = { email, password, username };
-    console.log("Form values:", values);
-
-    try {
-      const response = await axios.post(
+  const handleSubmit = (values: typeof form.values) => {
+    console.log("Form values:", values.email);
+    axios
+      .post(
         "http://localhost:3000/auth/signup",
-        payload,
+        {
+          email: values?.email,
+          password: values?.password,
+          fullName: values?.fullName,
+        },
         {
           headers: {
             "Content-Type": "application/json",
           },
         }
-      );
-
-      if (response.status === 201) {
-        showNotification({
-          title: "Success",
-          message: "Signup successful!",
-          color: "green",
-        });
-        console.log("Signup successful:", response.data);
-      } else {
-        showNotification({
-          title: "Error",
-          message: response.data.message || "Signup failed.",
-          color: "red",
-        });
-        console.error("Signup failed:", response.data.message || response.data);
-      }
-    } catch (error) {
-      if (axios.isAxiosError(error)) {
-        showNotification({
-          title: "Error",
-          message:
-            error.response?.data?.message || "An error occurred during signup.",
-          color: "red",
-        });
+      )
+      .then((res) => {
+        console.log("Post", res.data);
+        <Notification icon={IconCheck} color="teal" title="All good!" mt="md">
+          Everything is fine
+        </Notification>;
+        form.reset();
+        router.push("/login");
+      })
+      .catch((error) => {
         console.error(
-          "An error occurred during signup:",
-          error.response?.data?.message || error.message
+          "Post request failed:",
+          error?.response?.data?.message || error.message
         );
-      } else {
-        showNotification({
-          title: "Error",
-          message: "An unknown error occurred.",
-          color: "red",
-        });
-        console.error("An unknown error occurred:", error);
-      }
-    }
+        <Notification icon={IconX} color="red" title="Bummer!">
+          Something went wrong
+        </Notification>;
+      });
   };
+
+  // A@asdfghjkl
 
   return (
     <Flex
@@ -132,7 +123,7 @@ export default function SignUp() {
           <TextInput
             label="Full Name"
             placeholder="Type your name"
-            {...form.getInputProps("fullname")}
+            {...form.getInputProps("fullName")}
           />
           <TextInput
             label="Username"

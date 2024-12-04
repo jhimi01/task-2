@@ -1,12 +1,22 @@
 "use client";
 
+import useCookie from "@/hooks/useCookie";
 import { AppShell, Box, Burger, Button, Drawer, Image } from "@mantine/core";
 import { useDisclosure } from "@mantine/hooks";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import React from "react";
 
 export default function Navbar() {
   const [opened, { toggle, close }] = useDisclosure(false);
+  const { getCookie, removeCookie } = useCookie(); // Access `removeCookie`
+  const token = getCookie("accessToken");
+  const router = useRouter();
+
+  const handleLogout = () => {
+    removeCookie("accessToken"); // Remove the token
+    router.push("/login"); // Redirect to login page
+  };
 
   return (
     <AppShell
@@ -23,9 +33,15 @@ export default function Navbar() {
         <Link href="/export">Export</Link>
       </Box>
 
-      <Link href="/login">
-        <Button className="md:block hidden">Login</Button>
-      </Link>
+      {token ? (
+        <Button onClick={handleLogout} className="md:block hidden">
+          Logout
+        </Button>
+      ) : (
+        <Link href="/login">
+          <Button className="md:block hidden">Login</Button>
+        </Link>
+      )}
 
       {/* Mobile Drawer with Links */}
       <Drawer

@@ -35,6 +35,7 @@ import { IoIosArrowDown } from "react-icons/io";
 import { useEffect, useState } from "react";
 import { useTransaction } from "@/hooks/useTransaction";
 import axios from "axios";
+import useCookie from "@/hooks/useCookie";
 
 interface EditIncome {
   id: number;
@@ -52,10 +53,9 @@ interface EditExpenses {
   date: any | null;
 }
 
-const Token =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6MSwiZW1haWwiOiJ1c2VyQGV4YW1wbGUuY29tIiwiaWF0IjoxNzMzMjMwNjgwLCJleHAiOjE3MzMzMTcwODB9.kNP5-KYN7okp_ZB97Bfn7I5hhCoeujpGcLth5MgnFpg";
-
 export default function Output() {
+  const { getCookie } = useCookie(); // Access the `getCookie` function
+  const token = getCookie("accessToken"); // Retrieve the token from the cookie
   const [editIncome, setEditIncome] = useState<EditIncome | null>(null);
   const [editExpenses, setEditExpenses] = useState<EditExpenses | null>(null);
 
@@ -105,7 +105,7 @@ export default function Output() {
         try {
           const response = await axios.delete(url, {
             headers: {
-              Authorization: `Bearer ${Token}`,
+              Authorization: `Bearer ${token}`,
             },
           });
           console.log("Delete successful:", response.data);
@@ -141,7 +141,7 @@ export default function Output() {
         try {
           const response = await axios.delete(url, {
             headers: {
-              Authorization: `Bearer ${Token}`,
+              Authorization: `Bearer ${token}`,
             },
           });
           console.log("Delete successful:", response.data);
@@ -207,7 +207,6 @@ export default function Output() {
     const findData = expensesData.find((expense) => expense.id === id);
     setEditExpenses(findData);
     openExpense();
-    console.log(findData);
   };
 
   const handleEditIncome = (id: number) => {
@@ -487,10 +486,15 @@ export default function Output() {
             }).then(async (result) => {
               if (result.isConfirmed) {
                 try {
-                  const response = await axios.patch(url, data, {
+                  const response = await axios.patch(url,  {
+                    category: values.category,
+                    amount: values.amount,
+                    description: values.description,
+                    date: values.date,
+                  }, {
                     headers: {
                       "Content-Type": "application/json",
-                      Authorization: `Bearer ${Token}`,
+                      Authorization: `Bearer ${token}`,
                     },
                   });
                   console.log("Submit successful:", response.data);
@@ -564,8 +568,54 @@ export default function Output() {
         <Box
           component="form"
           onSubmit={formIncome.onSubmit((values) => {
-            // setEditIncome(values)
-            console.log(values);
+            const url = `http://localhost:3000/transaction/${editIncome?.id}`;
+
+            Swal.fire({
+              title: "Are you sure?",
+              text: "You won't be able to revert this!",
+              icon: "warning",
+              showCancelButton: true,
+              confirmButtonColor: "#3085d6",
+              cancelButtonColor: "#d33",
+              confirmButtonText: "Yes, submit it!",
+            }).then(async (result) => {
+              if (result.isConfirmed) {
+                try {
+                  const response = await axios.patch(
+                    url,
+                    {
+                      category: values.category,
+                      amount: values.amount,
+                      description: values.description,
+                      date: values.date,
+                    },
+                    {
+                      headers: {
+                        "Content-Type": "application/json",
+                        Authorization: `Bearer ${token}`,
+                      },
+                    }
+                  );
+                  console.log("Submit successful:", response.data);
+                  Swal.fire(
+                    "Submitted!",
+                    "Your transaction has been updated.",
+                    "success"
+                  );
+                  closeIncome(); // Close the modal after submission
+                } catch (error) {
+                  console.error(
+                    "Error submitting transaction:",
+                    error.response?.data || error
+                  );
+                  Swal.fire(
+                    "Error!",
+                    "Failed to update the transaction.",
+                    "error"
+                  );
+                }
+              }
+            });
           })}
           className="space-y-4 mt-3"
         >
@@ -578,7 +628,7 @@ export default function Output() {
           <TextInput
             label="Description"
             placeholder="Enter description"
-            {...formExpense.getInputProps("description")}
+            {...formIncome.getInputProps("description")}
           />
           <DateInput label="Date" {...formIncome.getInputProps("date")} />
           <Button fullWidth type="submit">
