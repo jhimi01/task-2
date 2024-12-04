@@ -16,6 +16,7 @@ import Link from "next/link";
 import React from "react";
 import { useRouter } from "next/navigation";
 import useCookie from "@/hooks/useCookie";
+import Swal from "sweetalert2";
 
 export default function Login() {
   const { setCookie } = useCookie(); // Import the custom hook
@@ -33,12 +34,18 @@ export default function Login() {
         headers: { "Content-Type": "application/json" },
       });
   
-      const token = response.data.accessToken; // Retrieve the token from the response
-      setCookie("accessToken", token, { expires: 7 }); // Save the token in the cookie for 7 days
+      const token = response.data.accessToken;
+      if (token) {
+        // Save the token in cookies
+        setCookie("accessToken", token, { expires: 7 });
   
-      // Redirect to the intended page (from the query parameter) or the homepage
-      const redirectPath = new URLSearchParams(window.location.search).get("redirect") || "/";
-      router.push(redirectPath);
+        // Get the redirect URL from the query parameter (if present)
+        const urlParams = new URLSearchParams(window.location.search);
+        const redirectPath = urlParams.get("redirect") || "/"; // Default to home page
+        router.push(redirectPath); // Redirect to the intended page
+      } else {
+        Swal.fire("Error!", "Login failed. No token received.", "error");
+      }
     } catch (error) {
       console.error("Login failed:", error);
       Swal.fire("Error!", "Login failed. Please try again.", "error");

@@ -13,6 +13,8 @@ export default function Navbar() {
   const token = getCookie("accessToken");
   const router = useRouter();
 
+  console.log(token)
+
   const handleLogout = () => {
     removeCookie("accessToken"); // Remove the token
     router.push("/login"); // Redirect to login page
