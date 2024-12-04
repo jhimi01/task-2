@@ -12,6 +12,7 @@ export default function Navbar() {
   const { getCookie, removeCookie } = useCookie(); // Access `removeCookie`
   const token = getCookie("accessToken");
   const router = useRouter();
+  
 
   console.log(token)
 

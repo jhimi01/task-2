@@ -59,10 +59,10 @@ export default function Output() {
   const [editIncome, setEditIncome] = useState<EditIncome | null>(null);
   const [editExpenses, setEditExpenses] = useState<EditExpenses | null>(null);
 
-  console.log("editExpenses", editExpenses);
+  // console.log("editExpenses", editExpenses);
 
   const { transactions } = useTransaction();
-  console.log(transactions);
+  // console.log(transactions);
 
   const incomeData = transactions?.filter(
     (transaction) => transaction?.type === "income"
@@ -468,10 +468,10 @@ export default function Output() {
         <Box
           component="form"
           onSubmit={formExpense.onSubmit(async (values) => {
-            console.log("Form values:", values);
+            // console.log("Form values:", values);
 
             const data = { ...values, id: editExpenses?.id };
-            console.log("Merged data:", data);
+            // console.log("Merged data:", data);
 
             const url = `http://localhost:3000/transaction/${editExpenses?.id}`;
 
@@ -497,7 +497,7 @@ export default function Output() {
                       Authorization: `Bearer ${token}`,
                     },
                   });
-                  console.log("Submit successful:", response.data);
+                  // console.log("Submit successful:", response.data);
                   Swal.fire(
                     "Submitted!",
                     "Your transaction has been updated.",
@@ -596,7 +596,7 @@ export default function Output() {
                       },
                     }
                   );
-                  console.log("Submit successful:", response.data);
+                  // console.log("Submit successful:", response.data);
                   Swal.fire(
                     "Submitted!",
                     "Your transaction has been updated.",
