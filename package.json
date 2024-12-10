@@ -23,6 +23,7 @@
     "@mantine/nprogress": "^7.13.4",
     "@mantine/spotlight": "^7.13.4",
     "@mantine/tiptap": "^7.13.4",
+    "@prisma/client": "^6.0.1",
     "@tabler/icons-react": "^3.21.0",
     "@tanstack/react-query": "^5.62.0",
     "@tanstack/react-router": "^1.82.12",
