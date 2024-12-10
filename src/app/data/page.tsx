@@ -7,13 +7,10 @@ export default async function Data() {
 
     console.log("users", users)
 
-    const text = "texts";
-    console.log("text", text)
-
 
   return (
     <div>
-      this is a data
+      this is a page
     </div>
   )
 }
